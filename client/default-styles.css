@@ -2,3 +2,44 @@
 	font-family: Helvetica, sans-serif;
 	color: black;
 }
+
+#current{
+  color: gray;
+}
+
+nav{
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+  padding: .5em;
+  background-color: #ffcccb;
+}
+
+nav a, nav a:link,nav a:visited{
+  text-decoration: none;
+  color: black;
+}
+
+nav a:hover{
+  color: red;
+  text-decoration: underline;
+}
+
+nav a:active{
+  color: blue;
+  text-decoration: underline;
+}
+
+a:hover{
+  color: red;
+  text-decoration: underline;
+}
+
+a:active{
+  color: blue;
+  text-decoration: underline;
+}
+
+footer{
+	font-style: italic;
+	padding-top: 1em;
+}
