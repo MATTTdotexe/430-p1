@@ -1,19 +1,47 @@
 const fs = require('fs');
 
+const homePage = fs.readFileSync(`${__dirname}/../client/homePage.html`);
+const appPage = fs.readFileSync(`${__dirname}/../client/appPage.html`);
+const uploadPage = fs.readFileSync(`${__dirname}/../client/uploadPage.html`);
+const adminPage = fs.readFileSync(`${__dirname}/../client/adminPage.html`);
 const errorPage = fs.readFileSync(`${__dirname}/../client/error.html`);
 const defaultStylesCSS = fs.readFileSync(`${__dirname}/../client/default-styles.css`);
 
-const get404Response = (request, response) => {
-  response.writeHead(200, { 'Content-Type': 'text/html' });
-  response.write(errorPage);
+const getResponse = (request, response, responseCode, type, page) => {
+  response.writeHead(responseCode, { 'Content-Type': type });
+  response.write(page);
   response.end();
+};
+
+const getHomePageResponse = (request, response) => {
+  getResponse(request, response, 200, 'text/html', homePage);
+};
+
+const getAppPageResponse = (request, response) => {
+  getResponse(request, response, 200, 'text/html', appPage);
+};
+
+const getUploadPageResponse = (request, response) => {
+  getResponse(request, response, 200, 'text/html', uploadPage);
+};
+
+const getAdminPageResponse = (request, response) => {
+  getResponse(request, response, 200, 'text/html', adminPage);
+};
+
+const get404Response = (request, response) => {
+  getResponse(request, response, 404, 'text/html', errorPage);
 };
 
 const getDefaultStylesCSSResponse = (request, response) => {
-  response.writeHead(200, { 'Content-Type': 'text/css' });
-  response.write(defaultStylesCSS);
-  response.end();
+  getResponse(request, response, 200, 'text/css', defaultStylesCSS);
 };
 
-module.exports.get404Response = get404Response;
-module.exports.getDefaultStylesCSSResponse = getDefaultStylesCSSResponse;
+module.exports = {
+	getHomePageResponse,
+	getAppPageResponse,
+	getUploadPageResponse,
+	getAdminPageResponse,
+	get404Response,
+	getDefaultStylesCSSResponse
+}
