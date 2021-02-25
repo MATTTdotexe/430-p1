@@ -4,13 +4,18 @@ const query = require('querystring');
 
 const htmlHandler = require('./htmlResponses.js');
 const jsonHandler = require('./responses.js');
+const imageHandler = require('./imageResponses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 const urlStruct = {
-  '/random-joke': jsonHandler.getRandomJokeResponse,
-  '/random-jokes': jsonHandler.getRandomJokesResponse,
+  '/': htmlHandler.getHomePageResponse,
+  '/app': htmlHandler.getAppPageResponse,
+  '/upload': htmlHandler.getUploadPageResponse,
+  '/admin': htmlHandler.getAdminPageResponse,
+  '/workout-records': jsonHandler.getWorkoutRecordsResponse,
   '/default-styles.css': htmlHandler.getDefaultStylesCSSResponse,
+  '/logo.png': imageHandler.getLogoResponse,
   notFound: htmlHandler.get404Response,
 };
 
