@@ -17,23 +17,7 @@ const respondHeaderOnly = (request, response, type, length) => {
 // Refactored to an arrow function by ACJ
 const getBinarySize = (string) => Buffer.byteLength(string, 'utf8');
 
-// Fisher-Yates-Durstenfeld shuffle
-// Source: https://stackoverflow.com/questions/3718282/javascript-shuffling-objects-inside-an-object-randomize
-// Adjusted to save to a temporary array by MR
-const shuffleArray = (array) => {
-  const tempArray = array;
-  for (let i = 0; i < array.length; i++) {
-    const j = i + Math.floor(Math.random() * (array.length - i));
-
-    const temp = tempArray[j];
-    tempArray[j] = tempArray[i];
-    tempArray[i] = temp;
-  }
-  return tempArray;
-};
-
-// return a random joke
-const getRandomJoke = () => {
+const getExercise = () => {
   const number = Math.floor(Math.random() * jokesObj.length);
   const responseObj = jokesObj[number];
 
@@ -112,5 +96,10 @@ const getRandomJokesResponse = (request, response, params, acceptedTypes, httpMe
   return respond(request, response, jokeResponse, 'application/json', getBinarySize(jokeResponse));
 };
 
-module.exports.getRandomJokeResponse = getRandomJokeResponse;
-module.exports.getRandomJokesResponse = getRandomJokesResponse;
+const getWorkoutRecordsResponse = (request, response, params, acceptedTypes, httpMethod) => {
+
+};
+
+module.exports = {
+  getWorkoutRecordsResponse
+}

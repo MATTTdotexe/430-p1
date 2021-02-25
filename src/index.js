@@ -16,6 +16,7 @@ const urlStruct = {
   '/workout-records': jsonHandler.getWorkoutRecordsResponse,
   '/default-styles.css': htmlHandler.getDefaultStylesCSSResponse,
   '/logo.png': imageHandler.getLogoResponse,
+  '/logo-icon.png': imageHandler.getLogoIconResponse,
   notFound: htmlHandler.get404Response,
 };
 
