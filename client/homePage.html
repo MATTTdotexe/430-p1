@@ -2,6 +2,9 @@
   <head>
     <title>Workout Tracker Home Page</title>
     <link rel="stylesheet" href="default-styles.css">
+    <nav>
+      <span id="current">Home</span> | <a href="/app">App</a> | <a href="/upload">Upload</a> | <a href="/admin">Admin</a>
+    </nav>
   </head>
   <body>
     <h1>Workout Tracker Home Page</h1>
@@ -23,11 +26,15 @@
     <p>The default data format is JSON. If you send an Accept header of "text/xml", the data will be returned in XML format.</p>
     <p>The default request method is GET. If you send a HEAD request, only the HTTP headers will be returned.</p>
 
-    <h1>Admins</h1>
+    <h2>Admins</h2>
     <p>Go to the <a href="/admin">Admin </a>page to view and edit all data.</p>
     <p>This is the <a href="/link-that-goes-to-nowhere">404 </a>page.</p>
     <p>Here is the <a href="/default-styles.css">Style Sheet </a>page.</p>
     <p>View the site <a href="/logo.png">Logo </a></p>
 
+    <footer>
+      <img src="logo-icon.png" alt="Lift Heavy Things!">
+      <p>&#169; 2021 Matt Roberts</p>
+    </footer>
   </body>
 </html>
