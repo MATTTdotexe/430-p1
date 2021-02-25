@@ -2,13 +2,68 @@
   <head>
     <title>Workout Tracker Upload Page</title>
     <link rel="stylesheet" href="default-styles.css">
+    <nav>
+      <a href="/">Home</a> | <a href="/app">App</a> | <span id="current">Upload</span> | <a href="/admin">Admin</a>
+    </nav>
   </head>
   <body>
     <h1>Workout Tracker Upload Page</h1>
     <p>This is the place to record your workouts!</p>
 
-    <h2>Enter Data</h2>
-    <p></p>
+    <h2>Add New Workout</h2>
+    <p>Please use the exact same username every time you upload, otherwise you will not be able to see your workouts under one username.</p>
+    <p>
+      <label for="userField">Username: </label>
+      <input id="userField" type="text" placeholder="johnsmith123">
+      <span>Please format as FIRSTNAME + LASTNAME + 3 numbers, lowercase with no spaces.</span>
+    </p>
+    <p>
+      <label for="dateField">Date of Workout: </label>
+      <input id="dateField" type="text" placeholder="07 04 1776">
+      <span>Please format as month, day, year all as numbers with spaces between.</span>
+    </p>
+    <p>
+      <label for="typeField">Type of Workout: </label>
+      <input id="typeField" type="text" placeholder="Legs">
+      <span>What kind of workout did you do? Ex: Legs, Arms, Back, Chest, Push, Pull, etc.</span>
+    </p>
+    <p>
+      <label for="overallDifficultyField">Overall Difficulty: </label>
+      <input id="overallDifficultyField" type="text" placeholder="7">
+      <span>1-10 <a href="/difficulty-scale">difficulty scale</a> of the workout overall.</span>
+    </p>
+    <input id="createWorkoutButton" type="button" value="Create a Workout">
+    <input id="completeWorkoutButton" type="button" value="Complete Workout">
 
+    <h3>Add An Exercise</h3>
+    <p>Please add an exercise here.</p>
+    <p>
+      <label for="exerciseNameField">Exercise Name: </label>
+      <input id="exerciseNameField" type="text" placeholder="Barbell Squats">
+    </p>
+    <input id="addExerciseButton" type="button" value="Add Exercise">
+    <input id="completeExerciseButton" type="button" value="Complete Exercise">
+
+    <h4>Add A Set</h4>
+    <p>Please add a set here.</p>
+    <p>
+      <label for="repsField">Reps: </label>
+      <input id="repsField" type="text" placeholder="8">
+    </p>
+    <p>
+      <label for="weightField">Weight Used in lbs: </label>
+      <input id="weightField" type="text" placeholder="135">
+    </p>
+    <p>
+      <label for="setDifficultyField">Difficulty: </label>
+      <input id="setDifficultyField" type="text" placeholder="5">
+      <span>1-10 <a href="/difficulty-scale">difficulty scale</a> of the individual set.</span>
+    </p>
+    <input id="AddSetButton" type="button" value="Add Set">
+
+    <footer>
+      <img src="logo-icon.png" alt="Lift Heavy Things!">
+      <p>&#169; 2021 Matt Roberts</p>
+    </footer>
   </body>
 </html>
