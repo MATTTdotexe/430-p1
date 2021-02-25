@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <title>Workout Tracker Home Page</title>
+    <link rel="stylesheet" href="default-styles.css">
+  </head>
+  <body>
+    <h1>Workout Tracker Home Page</h1>
+    <p>This is the place to record your workouts and view them later! Start recording and view your progress over time!</p>
+
+    <h2>Users</h2>
+    <p>Go to the <a href="/app">Main App </a>page to search for and view your own or other user's workouts.</p>
+    <p>Go to the <a href="/upload">Data Entry </a>page to enter your workouts.</p>
+
+    <h2>Developers</h2>
+    <p>Here is where you can retrieve my (Matt Roberts's) user data:</p>
+    <p>All of my workouts: 
+      <a href="/workout-records?user=matthewroberts117">Here</a>
+    </p>
+    <p>All of my workouts where I rated the difficulty between 3 and 8, inclusive: 
+      <a href="/workout-records?user=matthewroberts117&maxdifficulty=8&mindifficulty=3">Here </a>
+    </p>
+
+    <p>The default data format is JSON. If you send an Accept header of "text/xml", the data will be returned in XML format.</p>
+    <p>The default request method is GET. If you send a HEAD request, only the HTTP headers will be returned.</p>
+
+    <h1>Admins</h1>
+    <p>Go to the <a href="/admin">Admin </a>page to view and edit all data.</p>
+    <p>This is the <a href="/link-that-goes-to-nowhere">404 </a>page.</p>
+    <p>Here is the <a href="/default-styles.css">Style Sheet </a>page.</p>
+    <p>View the site <a href="/logo.png">Logo </a></p>
+
+  </body>
+</html>
