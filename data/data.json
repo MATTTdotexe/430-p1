@@ -1,0 +1,208 @@
+[
+  { "user": "matthewroberts117",
+    "workouts": [
+      {
+        "date": "Feb 20 2021",
+        "type": "Legs",
+        "overallDifficulty": "7",
+        "exercises": [
+          {
+            "name": "smith machine hip thrust",
+            "sets": [
+              {
+                "reps": "8",
+                "weight": "140",
+                "setDifficulty": "1"
+              },
+              {
+                "reps": "8",
+                "weight": "180",
+                "setDifficulty": "3"
+              },
+              {
+                "reps": "8",
+                "weight": "180",
+                "setDifficulty": "5"
+              },
+              {
+                "reps": "8",
+                "weight": "180",
+                "setDifficulty": "6"
+              },
+              {
+                "reps": "8",
+                "weight": "180",
+                "setDifficulty": "7"
+              },
+              {
+                "reps": "8",
+                "weight": "180",
+                "setDifficulty": "7"
+              }]},
+            {
+            "name": "seated calf raise",
+            "sets": [
+              {
+                "reps": "16",
+                "weight": "50",
+                "setDifficulty": "1"
+              },
+              {
+                "reps": "12",
+                "weight": "110",
+                "setDifficulty": "3"
+              },
+              {
+                "reps": "12",
+                "weight": "110",
+                "setDifficulty": "6"
+              },
+              {
+                "reps": "10",
+                "weight": "110",
+                "setDifficulty": "7"
+              },
+              {
+                "reps": "10",
+                "weight": "110",
+                "setDifficulty": "7"
+              }]},
+            {
+            "name": "smith machine cannonball squat",
+            "sets": [
+              {
+                "reps": "8",
+                "weight": "90",
+                "setDifficulty": "1"
+              },
+              {
+                "reps": "6",
+                "weight": "180",
+                "setDifficulty": "4"
+              },
+              {
+                "reps": "6",
+                "weight": "180",
+                "setDifficulty": "6"
+              },
+              {
+                "reps": "6",
+                "weight": "180",
+                "setDifficulty": "7"
+              },
+              {
+                "reps": "6",
+                "weight": "180",
+                "setDifficulty": "8"
+              },
+              {
+                "reps": "6",
+                "weight": "180",
+                "setDifficulty": "8"
+              },
+              {
+                "reps": "6",
+                "weight": "180",
+                "setDifficulty": "9"
+              }]}
+          ]
+      }]
+  },
+  {
+        "date": "Feb 22 2021",
+        "type": "Pull",
+        "overallDifficulty": "5",
+        "exercises": [
+          {
+            "name": "lat pulldown",
+            "sets": [
+              {
+                "reps": "10",
+                "weight": "100",
+                "setDifficulty": "1"
+              },
+              {
+                "reps": "10",
+                "weight": "140",
+                "setDifficulty": "4"
+              },
+              {
+                "reps": "10",
+                "weight": "140",
+                "setDifficulty": "6"
+              },
+              {
+                "reps": "10",
+                "weight": "140",
+                "setDifficulty": "6"
+              },
+              {
+                "reps": "10",
+                "weight": "135",
+                "setDifficulty": "7"
+              }]},
+            {
+            "name": "dumbell bicep curl",
+            "sets": [
+              {
+                "reps": "8",
+                "weight": "27.5",
+                "setDifficulty": "1"
+              },
+              {
+                "reps": "6",
+                "weight": "35",
+                "setDifficulty": "4"
+              },
+              {
+                "reps": "6",
+                "weight": "37.5",
+                "setDifficulty": "5"
+              },
+              {
+                "reps": "6",
+                "weight": "110",
+                "setDifficulty": "6"
+              },
+              {
+                "reps": "6",
+                "weight": "110",
+                "setDifficulty": "7"
+              },
+              {
+                "reps": "6",
+                "weight": "110",
+                "setDifficulty": "8"
+              }]},
+            {
+            "name": "neutral grip pullups",
+            "sets": [
+              {
+                "reps": "8",
+                "weight": "bodyweight",
+                "setDifficulty": "3"
+              },
+              {
+                "reps": "7",
+                "weight": "bodyweight",
+                "setDifficulty": "5"
+              },
+              {
+                "reps": "6",
+                "weight": "bodyweight",
+                "setDifficulty": "7"
+              },
+              {
+                "reps": "5",
+                "weight": "bodyweight",
+                "setDifficulty": "8"
+              },
+              {
+                "reps": "3",
+                "weight": "bodyweight",
+                "setDifficulty": "9"
+              }]}
+          ]
+      }]
+  }
+]
