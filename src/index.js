@@ -13,7 +13,7 @@ const urlStruct = {
   '/app': htmlHandler.getAppPageResponse,
   '/upload': htmlHandler.getUploadPageResponse,
   '/admin': htmlHandler.getAdminPageResponse,
-  '/workout-records': jsonHandler.getWorkoutRecordsResponse,
+  '/workout-records': jsonHandler.getAllWorkoutsResponse,
   '/default-styles.css': htmlHandler.getDefaultStylesCSSResponse,
   '/logo.png': imageHandler.getLogoResponse,
   '/logo-icon.png': imageHandler.getLogoIconResponse,
