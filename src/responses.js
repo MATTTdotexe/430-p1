@@ -1,6 +1,7 @@
 const fs = require('fs');
 const helperHandler = require('./helper.js');
 
+// reads in external JSON file where all data is stored
 const data = JSON.parse(fs.readFileSync(`${__dirname}/../data/data.json`));
 
 const respond = (request, response, content, type, length) => {
@@ -14,14 +15,17 @@ const respondHeaderOnly = (request, response, type, length) => {
   response.end();
 };
 
-// returns all workouts for a user, defaults to me :)
+// returns all workouts for a user, defaults to me if no user param exists
 const getAllWorkouts = (paramUser = "matthewroberts117") => {
   const responseObj = () => { 
-    for (let i = 0; i <= data.length; i++) {
+    // loop through all objects and search for the user param
+    for (let i = 0; i < data.length; i++) {
       if (data[i].user === paramUser) {
         return data[i];
       }
     }
+    // executes if the user param cannot be found
+    return "User " + paramUser + " does not exist.";
   };
   return JSON.stringify(responseObj());
 };
@@ -71,19 +75,24 @@ const getAllWorkoutsResponse = (request, response, params, acceptedTypes, httpMe
     `</workouts>
     `;
 
+    // XML HEAD request
     if (httpMethod === 'HEAD') {
       return respondHeaderOnly(request, response, 'text/xml', helperHandler.getBinarySize(responseXML));
+    // XML GET request
+    } else {
+      return respond(request, response, responseXML, 'text/xml', helperHandler.getBinarySize(responseXML));
     }
-    return respond(request, response, responseXML, 'text/xml', helperHandler.getBinarySize(responseXML));
   }
 
+  // JSON HEAD request
   if (httpMethod === 'HEAD') {
     return respondHeaderOnly(request, response, 'application/json', helperHandler.getBinarySize(getAllWorkouts(params.user)));
+  // JSON GET request
+  } else {
+    const workoutResponse = getAllWorkouts(params.user);
+    // const workoutResponse = "test string";
+    return respond(request, response, workoutResponse, 'application/json', helperHandler.getBinarySize(workoutResponse));
   }
-
-  const workoutResponse = getAllWorkouts(params.user);
-  // const workoutResponse = "test string";
-  return respond(request, response, workoutResponse, 'application/json', helperHandler.getBinarySize(workoutResponse));
 };
 
 module.exports = {
