@@ -106,9 +106,8 @@
                 "setDifficulty": "9"
               }]}
           ]
-      }]
-  },
-  {
+      },
+      {
         "date": "02 22 2021",
         "type": "Pull",
         "overallDifficulty": "5",
@@ -202,7 +201,8 @@
                 "weight": "bodyweight",
                 "setDifficulty": "9"
               }]}
-          ]
-      }]
+        ]
+      }
+    ]
   }
 ]
