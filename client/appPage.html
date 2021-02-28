@@ -5,13 +5,93 @@
     <nav>
       <a href="/">Home</a> | <span id="current">App</span> | <a href="/upload">Upload</a> | <a href="/admin">Admin</a>
     </nav>
+    <script>
+      const buildHTML = (data) => {
+        if (typeof data === "string") {
+          return `<h3>${data}</h3>`;
+        }
+
+        let workouts = data["workouts"];
+        let responseHTML = `<h2>Data for user: ${data["user"]}</h2>`;
+        for (let i = 0; i < Object.keys(workouts).length; i++) {
+          let exercises = workouts[i]["exercises"];
+          responseHTML += `
+            <h3>Date: ${workouts[i].date} | Type: ${workouts[i].type} | Overall Difficulty: ${workouts[i].overallDifficulty}</h3>
+          `;
+
+          // write HTML for each exercise
+          for (let j = 0; j < Object.keys(exercises).length; j++) {
+            let sets = exercises[j]["sets"];
+            responseHTML += `
+              <h4>Exercise Name: ${exercises[j].name}</h4>
+              <table>
+               <tr>
+                <th>Set #</th>
+                <th>Reps</th>
+                <th>Weight</th>
+                <th>Set Difficulty</th>
+               </tr>
+            `;
+
+            // write HTML for each set
+            for (let k = 0; k < Object.keys(sets).length; k++) {
+              responseHTML += `
+                <tr>
+                 <td>${k + 1}</td>
+                 <td>${sets[k].reps}</td>
+                 <td>${sets[k].weight}</td>
+                 <td>${sets[k].setDifficulty}</td>
+                </tr>
+              `;
+            }
+            responseHTML += `</table>
+            `;
+          }
+        }
+        return responseHTML;
+      }
+
+      const handleResponse = (e) => {
+        // console.log("e.target = ", e.target); // here 'e.target' is the 'xhr' object
+        // console.log("e.target.response = ", e.target.response);
+        const obj = JSON.parse(e.target.response);
+        // console.log("obj = ", obj);
+
+        document.querySelector("#workoutsDataDiv").innerHTML = buildHTML(obj);
+      }
+
+      const downloadWorkouts = (e) => {
+        // console.log(`An element of id=${e.target.id} was clicked!`);
+
+        const user = document.querySelector("#userField").value;
+        const workoutsDataURL = "/workout-records?user=" + user;
+        const xhr = new XMLHttpRequest();
+        xhr.onload = handleResponse;
+        xhr.open("GET", workoutsDataURL);
+        // with XHR, after we open a connection, but before we 'send()', we can set 1 or more HTTP request headers
+        // this isn't strictly necessary because "/random-joke" sends JSON by default
+        xhr.setRequestHeader('Accept', "application/javascript");
+        xhr.send();
+      }
+      
+      const init = () => {
+        document.querySelector("#getWorkoutsDataButton").addEventListener("click", downloadWorkouts);
+      }
+      
+      window.onload = init;
+    </script>
   </head>
   <body>
     <h1>Workout Tracker App Page</h1>
     <p>This is the place to view entered workouts!</p>
 
     <h2>Data</h2>
-    <p></p>
+    <label for="userField">Overall Difficulty: </label>
+    <input id="userField" type="text" placeholder="matthewroberts117" value="matthewroberts117">
+
+    <input id="getWorkoutsDataButton" type="button" value="Get Data">
+
+    <div id=workoutsDataDiv></div>
 
     <footer>
       <img src="logo-icon.png" alt="Lift Heavy Things!">
