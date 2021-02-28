@@ -4,4 +4,4 @@ const getBinarySize = (string) => Buffer.byteLength(string, 'utf8');
 
 module.exports = {
   getBinarySize
-}
+};
