@@ -38,10 +38,10 @@ const getDefaultStylesCSSResponse = (request, response) => {
 };
 
 module.exports = {
-	getHomePageResponse,
-	getAppPageResponse,
-	getUploadPageResponse,
-	getAdminPageResponse,
-	get404Response,
-	getDefaultStylesCSSResponse
-}
+  getHomePageResponse,
+  getAppPageResponse,
+  getUploadPageResponse,
+  getAdminPageResponse,
+  get404Response,
+  getDefaultStylesCSSResponse,
+};
