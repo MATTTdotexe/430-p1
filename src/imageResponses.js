@@ -18,6 +18,6 @@ const getLogoIconResponse = (request, response) => {
 };
 
 module.exports = {
-	getLogoResponse,
-  getLogoIconResponse
-}
+  getLogoResponse,
+  getLogoIconResponse,
+};
