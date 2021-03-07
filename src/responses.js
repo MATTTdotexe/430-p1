@@ -199,7 +199,7 @@ const postNewUser = (request, response, params) => {
   return respond(request, response, 201, content, 'text/html', length);
 }
 
-const postUserExists = (request, response, params, acceptedTypes, httpMethod) => {
+const postUserExists = (request, response, params) => {
   let user = params.user;
   // check the data for the user
   const data = JSON.parse(fs.readFileSync(`${__dirname}/../data/data.json`));
@@ -222,9 +222,9 @@ const postUserExists = (request, response, params, acceptedTypes, httpMethod) =>
   return respond(request, response, 201, content, 'application/JSON', length);
 }
 
-// const deleteWorkout = (request, response, params, acceptedTypes, httpMethod) => {
-//  
-// }
+//const deleteWorkout = (request, response, params, acceptedTypes, httpMethod) => {
+// 
+//}
 
 module.exports = {
   getAllUsersResponse,
@@ -232,5 +232,5 @@ module.exports = {
   postNewWorkout,
   postNewUser,
   postUserExists,
-  deleteWorkout
+  //deleteWorkout
 };
