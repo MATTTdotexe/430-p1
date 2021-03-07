@@ -3,7 +3,7 @@
     <title>Workout Tracker App Page</title>
     <link rel="stylesheet" href="default-styles.css">
     <nav>
-      <a href="/">Home</a> | <span id="current">App</span> | <a href="/upload">Upload</a> | <a href="/admin">Admin</a>
+      <a href="/">Home</a> | <span id="current">App</span> | <a href="/upload">Upload</a> | <a href="/admin">Admin</a> | <a href="/sign-in">Sign-In</a> | <span class="activeUser"></span>
     </nav>
     <script>
       const buildHTML = (data) => {
@@ -12,17 +12,18 @@
         }
 
         let workouts = data["workouts"];
-        let responseHTML = `<h2>Data for user: ${data["user"]}</h2>`;
+        let responseHTML = `<div class="allDataDiv">
+          <h2>Data for user: ${data["user"]}</h2>`;
         for (let i = 0; i < Object.keys(workouts).length; i++) {
           let exercises = workouts[i]["exercises"];
-          responseHTML += `
+          responseHTML += `<div class="workoutDiv">
             <h3>Date: ${workouts[i].date} | Type: ${workouts[i].type} | Overall Difficulty: ${workouts[i].overallDifficulty}</h3>
           `;
 
           // write HTML for each exercise
           for (let j = 0; j < Object.keys(exercises).length; j++) {
             let sets = exercises[j]["sets"];
-            responseHTML += `
+            responseHTML += `<div class="exerciseDiv">
               <h4>Exercise Name: ${exercises[j].name}</h4>
               <table>
                <tr>
@@ -44,18 +45,19 @@
                 </tr>
               `;
             }
-            responseHTML += `</table>
-            `;
+            responseHTML += `</table></div>
+            `; // closes exercise div
           }
+          responseHTML += `</div>
+          `; // closes workout div
         }
+        responseHTML += `</div>
+        `; // closes overall data div
         return responseHTML;
       }
 
       const handleResponse = (e) => {
-        // console.log("e.target = ", e.target); // here 'e.target' is the 'xhr' object
-        // console.log("e.target.response = ", e.target.response);
         const obj = JSON.parse(e.target.response);
-        // console.log("obj = ", obj);
 
         document.querySelector("#workoutsDataDiv").innerHTML = buildHTML(obj);
       }
@@ -76,26 +78,28 @@
       
       const init = () => {
         document.querySelector("#getWorkoutsDataButton").addEventListener("click", downloadWorkouts);
+
+        document.querySelector(".activeUser").innerHTML = localStorage.user;
       }
       
       window.onload = init;
     </script>
   </head>
   <body>
-    <h1>Workout Tracker App Page</h1>
-    <p>This is the place to view entered workouts!</p>
+    <div class="centerMeDiv">
+      <h1>Workout Tracker App Page</h1>
 
-    <h2>Data</h2>
-    <label for="userField">Overall Difficulty: </label>
-    <input id="userField" type="text" placeholder="matthewroberts117" value="matthewroberts117">
+      <label for="userField">User: </label>
+      <input id="userField" type="text" placeholder="matthewroberts117" value="matthewroberts117">
 
-    <input id="getWorkoutsDataButton" type="button" value="Get Data">
+      <input id="getWorkoutsDataButton" type="button" value="Get Data">
 
-    <div id=workoutsDataDiv></div>
+      <div id=workoutsDataDiv></div>
 
-    <footer>
-      <img src="logo-icon.png" alt="Lift Heavy Things!">
-      <p>&#169; 2021 Matt Roberts</p>
-    </footer>
+      <footer>
+        <img src="logo-icon.png" alt="Lift Heavy Things!">
+        <p>&#169; 2021 Matt Roberts</p>
+      </footer>
+    </div>
   </body>
 </html>

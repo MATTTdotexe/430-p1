@@ -3,39 +3,51 @@
     <title>Workout Tracker Home Page</title>
     <link rel="stylesheet" href="default-styles.css">
     <nav>
-      <span id="current">Home</span> | <a href="/app">App</a> | <a href="/upload">Upload</a> | <a href="/admin">Admin</a>
+      <span id="current">Home</span> | <a href="/app">App</a> | <a href="/upload">Upload</a> | <a href="/admin">Admin</a> | <a href="/sign-in">Sign-In</a> | <span class="activeUser"></span>
     </nav>
+    <script>
+      const changeLink = () => {
+        let linkElement = document.querySelector("#userLink");
+        let linkInputElement = document.querySelector("#userLinkInput");
+
+        // update the link using the value of the input
+        linkElement.href = `/workout-records?user=${linkInputElement.value}`;
+      }
+
+      const init = () => {
+        // clear the input when the page is loaded
+        linkInputElement = document.querySelector("#userLinkInput").value = "";
+
+        document.querySelector("#userLinkInput").oninput = changeLink;
+        document.querySelector(".activeUser").innerHTML = localStorage.user;
+      }
+
+      window.onload = init;
+    </script>
   </head>
   <body>
-    <h1>Workout Tracker Home Page</h1>
-    <p>This is the place to record your workouts and view them later! Start recording and view your progress over time!</p>
+    <div>
+      <h1>Workout Tracker Home Page</h1>
+      <p>This is the place to record your workouts and view them later! Start recording and view your progress over time!</p>
 
-    <h2>Users</h2>
-    <p>Go to the <a href="/app">Main App </a>page to search for and view your own or other user's workouts.</p>
-    <p>Go to the <a href="/upload">Data Entry </a>page to enter your workouts.</p>
+      <h2>Users</h2>
+      <p>View your data: <a href="/app">Here</a></p>
+      <p>Enter data: <a href="/upload">Here</a></p>
 
-    <h2>Developers</h2>
-    <p>Here is where you can retrieve my (Matt Roberts's) user data:</p>
-    <p>All of my workouts: 
-      <a href="/workout-records?user=matthewroberts117">Here</a>
-    </p>
-    <p>All of my workouts where I rated the difficulty a 7: 
-      <a href="/workout-records?user=matthewroberts117&overallDifficulty=7">Here </a>
-      <span> <=== NOT FUNCTIONAL YET</span>
-    </p>
+      <h2>Developers</h2>
+      <p>My (Matt Roberts's) user data: <a href="/workout-records?user=matthewroberts117">Here</a></p>
+      <p><input id="userLinkInput" type="text" placeholder="Enter user">'s user data: <a id="userLink" href="/workout-records?user=">Here</a></p>
 
-    <p>The default data format is JSON. If you send an Accept header of "text/xml", the data will be returned in XML format.</p>
-    <p>The default request method is GET. If you send a HEAD request, only the HTTP headers will be returned.</p>
+      <h2>Admins</h2>
+      <p>Admin page: <a href="/admin">Here</a></p>
+      <p>404 page: <a href="/link-that-goes-to-nowhere">Here</a></p>
+      <p>Style Sheet: <a href="/default-styles.css">Here</a></p>
+      <p>Logo: <a href="/logo.png">Here</a></p>
 
-    <h2>Admins</h2>
-    <p>Go to the <a href="/admin">Admin </a>page to view and edit all data.</p>
-    <p>This is the <a href="/link-that-goes-to-nowhere">404 </a>page.</p>
-    <p>Here is the <a href="/default-styles.css">Style Sheet </a>page.</p>
-    <p>View the site <a href="/logo.png">Logo </a></p>
-
-    <footer>
-      <img src="logo-icon.png" alt="Lift Heavy Things!">
-      <p>&#169; 2021 Matt Roberts</p>
-    </footer>
+      <footer>
+        <img src="logo-icon.png" alt="Lift Heavy Things!">
+        <p>&#169; 2021 Matt Roberts</p>
+      </footer>
+    </div>
   </body>
 </html>

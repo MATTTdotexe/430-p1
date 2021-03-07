@@ -3,68 +3,315 @@
     <title>Workout Tracker Upload Page</title>
     <link rel="stylesheet" href="default-styles.css">
     <nav>
-      <a href="/">Home</a> | <a href="/app">App</a> | <span id="current">Upload</span> | <a href="/admin">Admin</a>
+      <a href="/">Home</a> | <a href="/app">App</a> | <span id="current">Upload</span> | <a href="/admin">Admin</a> | <a href="/sign-in">Sign-In</a> | <span class="activeUser"></span>
     </nav>
+    <script>
+      const handleResponse = (e) => {
+        // display the message that the server sends back after the POST
+        const obj = e.target.response;
+
+        showServerMessage(obj);
+      }
+
+      const addSetRow = (e) => {
+        // get the table element
+        let parentDivID = "#" + e.currentTarget.parentElement.id;
+        let parentDiv = document.querySelector(parentDivID);
+        let tableElement = parentDiv.children[2];
+        let length = tableElement.rows.length;
+        // maximum rows allowed is 10 (plus 1 for the heading row)
+        if (length >= 11) {
+          return;
+        } else {
+          // creates a new row, its cells, and text inputs
+          let newRow = tableElement.insertRow(length);
+          for (let i = 0; i <= 2; i++) {
+            let newCell = newRow.insertCell(i);
+            let newInput = document.createElement("input");
+            newInput.type = "number";
+            newInput.className = "tableInputs";
+            newInput.addEventListener('input', function(){this.validity.valid||(this.value='');}, true);
+            if (i === 0) { // reps 
+              newInput.min = 1;
+              newInput.max = 50;
+              newInput.step = 1;
+            } else if (i === 1) { // weight
+              newInput.min = 0;
+              newInput.max = 2000;
+            } else if (i === 2) { // set difficulty
+              newInput.min = 1;
+              newInput.max = 10;
+              newInput.step = 1;
+            }
+            newCell.appendChild(newInput);
+          }
+        }
+      }
+
+      const removeSetRow = (e) => {
+        // get the table element
+        let parentDivID = "#" + e.currentTarget.parentElement.id;
+        let parentDiv = document.querySelector(parentDivID);
+        let tableElement = parentDiv.children[2];
+        // minimum rows allowed is 1 (plus 1 for the heading row)
+        if (tableElement.rows.length <= 2) {
+          return;
+        } else {
+          // removes the last row
+          tableElement.deleteRow(-1);
+        }
+      }
+
+      const addExerciseTable = (e) => {
+        // get the overall exercises div element
+        let parentDivID = "#exercisesDiv";
+        let parentDiv = document.querySelector(parentDivID);
+        // maximum tables allowed is 10
+        if (parentDiv.children.length >= 10) {
+          return;
+        } else { // id for elements are numbers appropriately by using the length of the children array
+          let newExerciseDiv = document.createElement('div');
+          let index = parentDiv.children.length + 1;
+          newExerciseDiv.id = "exerciseDiv" + index;
+          const newHTMLTable = `
+            <label class="exerciseName" for="exerciseNameField${index}">Exercise Name: </label>
+            <input class="exerciseName" id="exerciseNameField${index}" type="text"></input>
+            <table class="exerciseTable">
+              <tr>
+                <th>Reps</th>
+                <th>Weight</th>
+                <th>Set Difficulty</th>
+              </tr>
+              <tr>
+                <td><input class="tableInputs" type="number" min="1" max="50" step="1" oninput="validity.valid||(value='');"></input></td>
+                <td><input class="tableInputs" type="number" min="0" max="2000"></input></td>
+                <td><input class="tableInputs" type="number" min="1" max="10" step="1" oninput="validity.valid||(value='');"></input></td>
+              </tr>
+            </table>
+            <input class="exerciseButton" id="addSetRowButton${index}" type="button" value="Add Row"></input>
+            <input class="exerciseButton" id="removeSetRowButton${index}" type="button" value="Remove Row"></input>
+            `;
+          newExerciseDiv.innerHTML = newHTMLTable;
+          // insert the new element before the new exercise button
+          parentDiv.appendChild(newExerciseDiv);
+
+          // hook up event listeners for the new buttons
+          document.querySelector(`#addSetRowButton${index}`).addEventListener("click", addSetRow);
+          document.querySelector(`#removeSetRowButton${index}`).addEventListener("click", removeSetRow);
+        }
+      }
+
+      const removeExerciseTable = (e) => {
+        // get the overall exercises div element
+        let parentDivID = "#exercisesDiv";
+        let parentDiv = document.querySelector(parentDivID);
+        // minimum tables allowed is 1 
+        if (parentDiv.children.length <= 1) {
+          return;
+        } else {
+          // remove the last table
+          let lastExerciseTable = parentDiv.children[parentDiv.children.length - 1];
+          parentDiv.removeChild(lastExerciseTable);
+        }
+      }
+
+      const uploadWorkout = (e) => {
+        const user = localStorage.getItem('user');
+        if (user === "") {
+          showErrorMessage("You are not signed in. Please sign in.");
+        }
+
+        const JSONData = formatData();
+        if (!JSONData) { // check if the JSON was able to be formatted, if not exit and do not upload to server
+          return;
+        }
+        const stringData = JSON.stringify(JSONData);
+
+        // create the URL with all params
+        const workoutsDataURL = "/workout-upload?user=" + user + "&data=" + stringData;
+
+        const xhr = new XMLHttpRequest();
+        xhr.onload = handleResponse;
+        xhr.open("POST", workoutsDataURL);
+        xhr.setRequestHeader('Accept', "text/html");
+        xhr.send();
+      }
+
+      const formatData = () => {
+        // get the DOM objects to work with
+        let exercisesDiv = document.querySelector("#exercisesDiv");
+        let exercisesDivChildren = exercisesDiv.children;
+        // set up the main json object
+        let workoutDataJSON = {};
+
+        // check for empty values for the date, type, and workout difficulty
+        workoutDataJSON.date = document.querySelector("#dateField").value;
+        if (!workoutDataJSON.date) {
+          showErrorMessage("Enter a date.");
+          return false;
+        }
+        workoutDataJSON.type = document.querySelector("#typeField").value;
+        if (!workoutDataJSON.type) {
+          showErrorMessage("Enter a workout type.");
+          return false;
+        }
+        workoutDataJSON.overallDifficulty = document.querySelector("#overallDifficultyField").value;
+        if (!workoutDataJSON.overallDifficulty) {
+          showErrorMessage("Enter a workout difficulty.");
+          return false;
+        }
+
+        // set up an array of exercises
+        workoutDataJSON.exercises = [];
+        // loop through each exercise div 
+        for (let i = 0; i < exercisesDivChildren.length; i++) {
+          // get the table element
+          let currentExerciseTable = exercisesDivChildren[i].children[2];
+          let currentExercise = {};
+          let id = `#exerciseNameField${i+1}`;
+
+          // check for an empty value for the exercise name
+          currentExercise.name = document.querySelector(id).value;
+          if (!currentExercise.name) {
+            showErrorMessage(`Enter an exercise name for exercise #${i+1}.`);
+            return false;
+          }
+
+          // set up an array of sets
+          currentExercise.sets = [];
+          let currentSet = {};
+          // loop through each table row
+          for (let j = 0, row; row = currentExerciseTable.rows[j]; j++) {
+            if (j === 0) { // skips the header row
+              continue;
+            } else { 
+              // set the properties of the set object by using the value inside the inputs
+              // check for empty values for row data
+              currentSet.reps = row.cells[0].children[0].value;
+              if (!currentSet.reps) {
+                showErrorMessage(`Enter a number of reps for exercise #${i+1}, set #${j}.`);
+                return false;
+              }
+              currentSet.weight = row.cells[1].children[0].value;
+              if (!currentSet.weight) {
+                showErrorMessage(`Enter a weight used for exercise #${i+1}, set #${j}.`);
+                return false;
+              }
+              currentSet.setDifficulty = row.cells[2].children[0].value;
+              if (!currentSet.setDifficulty) {
+                showErrorMessage(`Enter the set difficulty for exercise #${i+1}, set #${j}.`);
+                return false;
+              }
+
+            }
+            // add the set the array of sets
+            currentExercise.sets.push(currentSet);
+
+          }
+          // add the exercise to the array of exercises
+          workoutDataJSON.exercises.push(currentExercise);
+
+        }
+        // reset the error message
+        return workoutDataJSON;
+      }
+
+      const showErrorMessage = (message) => {
+        // clear out a previous server message
+        let messageField = document.querySelector("#messageField");
+        messageField.innerHTML = "";
+
+        // write a new error message
+        let errorField = document.querySelector("#errorField");
+        errorField.innerHTML = message;
+      }
+
+      const showServerMessage = (message) => {
+        // clear out a previous error message
+        let errorField = document.querySelector("#errorField");
+        errorField.innerHTML = "";
+
+        // write a new success message
+        let messageField = document.querySelector("#messageField");
+        messageField.innerHTML = message;
+      }
+      
+      const init = () => {
+        document.querySelector("#addSetRowButton1").addEventListener("click", addSetRow);
+        document.querySelector("#removeSetRowButton1").addEventListener("click", removeSetRow);
+        document.querySelector("#addExerciseTableButton").addEventListener("click", addExerciseTable);
+        document.querySelector("#removeExerciseTableButton").addEventListener("click", removeExerciseTable);
+        document.querySelector("#uploadWorkoutButton").addEventListener("click", uploadWorkout);
+
+        document.querySelector(".activeUser").innerHTML = localStorage.user;
+      }
+      
+      window.onload = init;
+    </script>
   </head>
   <body>
-    <h1>Workout Tracker Upload Page</h1>
-    <p>This is the place to record your workouts!</p>
-    <p>THIS PAGE IS NON FUNCTIONAL AT THE MOMENT</p>
+    <div class=centerMeDiv>
+      <h1>Workout Tracker Upload Page</h1>
 
-    <h2>Add New Workout</h2>
-    <p>Please use the exact same username every time you upload, otherwise you will not be able to see your workouts under one username.</p>
-    <p>
-      <label for="userField">Username: </label>
-      <input id="userField" type="text" placeholder="johnsmith123">
-      <span>Please format as FIRSTNAME + LASTNAME + 3 numbers, lowercase with no spaces.</span>
-    </p>
-    <p>
-      <label for="dateField">Date of Workout: </label>
-      <input id="dateField" type="text" placeholder="07 04 1776">
-      <span>Please format as month, day, year all as numbers with spaces between.</span>
-    </p>
-    <p>
-      <label for="typeField">Type of Workout: </label>
-      <input id="typeField" type="text" placeholder="Legs">
-      <span>What kind of workout did you do? Ex: Legs, Arms, Back, Chest, Push, Pull, etc.</span>
-    </p>
-    <p>
-      <label for="overallDifficultyField">Overall Difficulty: </label>
-      <input id="overallDifficultyField" type="text" placeholder="7">
-      <span>1-10 <a href="/difficulty-scale">difficulty scale</a> of the workout overall.</span>
-    </p>
-    <input id="createWorkoutButton" type="button" value="Create a Workout">
-    <input id="completeWorkoutButton" type="button" value="Complete Workout">
+      <div id="createWorkoutDiv">
+        <h2>Create New Workout</h2>
+        <div id="messageDiv">
+          <p id="errorField"></p>
+          <div id="messageField"></div>
+        </div>
+        
+        <div id="workoutFieldsDiv">
+          <p>
+            <label for="dateField">Date of Workout: </label>
+            <input id="dateField" type="date">
+          </p>
+          <p>
+            <label for="typeField">Type of Workout: </label>
+            <input id="typeField" type="text" placeholder="Legs">
+          </p>
+          <p>
+            <label for="overallDifficultyField"><a href="/difficulty-scale" target="_blank">Overall Difficulty:</a> </label>
+            <input id="overallDifficultyField" type="number" min="1" max="10" step="1" oninput="validity.valid||(value='');">
+          </p>
+          <h3>Add Exercises</h3>
+        </div>
+        
+        <div id="exercisesDiv">
+          <div id="exerciseDiv1">
+            <label class="exerciseName" for="exerciseNameField1">Exercise Name: </label>
+            <input class="exerciseName" id="exerciseNameField1" type="text"></input>
+            <table class="exerciseTable">
+              <tr>
+                <th>Reps</th>
+                <th>Weight</th>
+                <th>Set Difficulty</th>
+              </tr>
+              <tr>
+                <td><input class="tableInputs" type="number" min="1" max="50" step="1" oninput="validity.valid||(value='');"></input></td>
+                <td><input class="tableInputs" type="number" min="0" max="2000" oninput="validity.valid||(value='');"></input></td>
+                <td><input class="tableInputs" type="number" min="1" max="10" step="1" oninput="validity.valid||(value='');"></input></td>
+              </tr>
+            </table>
+            <input class="exerciseButton" id="addSetRowButton1" type="button" value="Add Row"></input>
+            <input class="exerciseButton" id="removeSetRowButton1" type="button" value="Remove Row"></input>
+          </div>
+        </div>
 
-    <h3>Add An Exercise</h3>
-    <p>Please add an exercise here.</p>
-    <p>
-      <label for="exerciseNameField">Exercise Name: </label>
-      <input id="exerciseNameField" type="text" placeholder="Barbell Squats">
-    </p>
-    <input id="addExerciseButton" type="button" value="Add Exercise">
-    <input id="completeExerciseButton" type="button" value="Complete Exercise">
+        <div id="exerciseButtonsDiv">
+          <input id="addExerciseTableButton" type="button" value="Add Exercise"></input>
+          <input id="removeExerciseTableButton" type="button" value="Remove Exercise"></input>
+        </div>
 
-    <h4>Add A Set</h4>
-    <p>Please add a set here.</p>
-    <p>
-      <label for="repsField">Reps: </label>
-      <input id="repsField" type="text" placeholder="8">
-    </p>
-    <p>
-      <label for="weightField">Weight Used in lbs: </label>
-      <input id="weightField" type="text" placeholder="135">
-    </p>
-    <p>
-      <label for="setDifficultyField">Difficulty: </label>
-      <input id="setDifficultyField" type="text" placeholder="5">
-      <span>1-10 <a href="/difficulty-scale">difficulty scale</a> of the individual set.</span>
-    </p>
-    <input id="AddSetButton" type="button" value="Add Set">
+        <div id="uploadButtonDiv">
+          <input id="uploadWorkoutButton" type="button" value="Upload Workout"></input>
+        </div>
+      </div>
+      
 
-    <footer>
-      <img src="logo-icon.png" alt="Lift Heavy Things!">
-      <p>&#169; 2021 Matt Roberts</p>
-    </footer>
+      <footer>
+        <img src="logo-icon.png" alt="Lift Heavy Things!">
+        <p>&#169; 2021 Matt Roberts</p>
+      </footer>
+    </div>
   </body>
 </html>

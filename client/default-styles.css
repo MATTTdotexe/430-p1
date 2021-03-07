@@ -1,60 +1,122 @@
-*{ 
+* { 
 	font-family: Helvetica, sans-serif;
 	color: black;
 }
 
-#current{
-  color: gray;
+button {
+	margin: .5em;
 }
 
-nav{
-  border-top: 1px solid gray;
-  border-bottom: 1px solid gray;
-  padding: .5em;
-  background-color: #ffcccb;
+.centerMeDiv {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
 }
 
-nav a, nav a:link,nav a:visited{
-  text-decoration: none;
-  color: black;
+#createNewUserDiv, #signInDiv {
+	text-align: left;
 }
 
-nav a:hover{
+#current {
+	color: gray;
+}
+
+nav {
+	border-top: 1px solid gray;
+	border-bottom: 1px solid gray;
+	padding: .5em;
+	background-color: #ffcccb;
+}
+
+nav a, nav a:link, nav a:visited {
+	text-decoration: none;
+	color: black;
+}
+
+nav a:hover {
   color: red;
   text-decoration: underline;
 }
 
-nav a:active{
-  color: blue;
-  text-decoration: underline;
+nav a:active {
+	color: blue;
+	text-decoration: underline;
 }
 
-a:hover{
-  color: red;
-  text-decoration: underline;
+a:hover {
+	color: red;
+	text-decoration: underline;
 }
 
-a:active{
-  color: blue;
-  text-decoration: underline;
+a:active {
+	color: blue;
+	text-decoration: underline;
 }
 
 table {
-  border: 3px solid black;
-  border-collapse: collapse;
+	border: 3px solid black;
+	border-collapse: collapse;
+	margin-right: auto;
+	margin-left: auto;
 }
 
 th {
-  border: 2px solid black;
-  border-collapse: collapse;
+	border: 2px solid black;
+	border-collapse: collapse;
 }
 
 td {
-  border: 1px solid black;
-  border-collapse: collapse;
+	border: 1px solid black;
+	border-collapse: collapse;
 }
 
-footer{
+input[type=button] {
+	margin: .5em;
+}
+
+#errorField, #messageField {
+	font-weight: bold;
+}
+
+#errorField {
+	color: red;
+}
+
+#overallDifficultyField {
+	width: 5em;
+}
+
+#dateField, #typeField {
+	width: 10em;
+}
+
+input.exerciseName {
+	width: 15em;
+}
+
+.exerciseName {
+	margin: .5em;
+}
+
+.tableInputs {
+	width: 10em;
+}
+
+.allDataDiv, .workoutDiv, .exerciseDiv {
+	padding: .5em;
+}
+
+.workoutDiv {
+	border: 3px solid black;
+}
+
+.exerciseDiv {
+	margin: .5em;
+	border: 2px dashed black;
+}
+
+footer {
 	font-style: italic;
 	padding-top: 1em;
 }
