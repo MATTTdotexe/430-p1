@@ -1,0 +1,125 @@
+<html>
+  <head>
+    <title>Workout Tracker Sign-In Page</title>
+    <link rel="stylesheet" href="default-styles.css">
+    <nav>
+      <a href="/">Home</a> | <a href="/app">App</a> | <a href="/upload">Upload</a> | <a href="/admin">Admin</a> | <span id="current">Sign-In</span> | <span class="activeUser"></span>
+    </nav>
+    <script>
+      const showMessage = (message, color = '') => {
+        // remove a previous message if needed
+        let messageDiv = document.querySelector("#messageDiv");
+        messageDiv.innerHTML = "";
+
+        if (color === "") { // if no color is set, treat the message as html already
+          messageDiv.innerHTML = message;
+        } else {
+          // create and append the new message
+          let messageElement = document.createElement("p");
+          messageElement.style.color = color;
+          messageElement.style.fontWeight = "bold";
+          messageElement.innerHTML = message;
+          messageDiv.appendChild(messageElement);
+        }
+      }
+
+      const signInUser = () => {
+        let user = document.querySelector("#signInInput").value;
+        if (user === "") { // check if a user was entered
+          showMessage("Enter a user to sign in.", "red");
+        } else {
+          doesUserExist();
+        }
+      }
+
+      const doesUserExist = (e) => {
+        let user = document.querySelector("#signInInput").value;
+        // create the URL with all params
+        const userExistsURL = "/user-exists?user=" + user;
+
+        const xhr = new XMLHttpRequest();
+        xhr.onload = handleUserExistsResponse;
+        xhr.open("POST", userExistsURL);
+        xhr.setRequestHeader('Accept', "application/JSON");
+        xhr.send();
+      }
+
+      const handleUserExistsResponse = (e) => {
+        // get the response from the server (should be a boolean)
+        let obj = e.target.response;
+        obj = JSON.parse(obj);
+
+        if (obj.userExists) { // server says that user exists
+          let user = document.querySelector("#signInInput").value; 
+          localStorage.setItem("user", user); // save the user in local storage to use on other pages
+
+          showMessage(`User ${user} successfully signed in.`, "green");
+        } else { // server says that user does not exist
+          let user = document.querySelector("#signInInput").value; 
+          showMessage(`User ${user} does not exist.`, "red");
+        }
+      }
+
+      const createNewUser = () => {
+        let user = document.querySelector("#createNewUserInput").value;
+        if (user === "") { // check if a user was entered
+          showMessage("Enter a new user to register.", "red");
+        } else {
+          uploadNewUser();
+        }
+      }
+
+      const uploadNewUser = (e) => {
+        let user = document.querySelector("#createNewUserInput").value;
+        // create the URL with all params
+        const userUploadURL = "/user-upload?user=" + user;
+
+        const xhr = new XMLHttpRequest();
+        xhr.onload = handleUserUploadResponse;
+        xhr.open("POST", userUploadURL);
+        xhr.setRequestHeader('Accept', "text/html");
+        xhr.send();
+      }
+
+      const handleUserUploadResponse = (e) => {
+        // get the response from the server
+        let obj = e.target.response;
+
+        showMessage(obj);
+      }
+
+      const init = () => {
+        document.querySelector("#createNewUserButton").onclick = createNewUser;
+        document.querySelector("#signInButton").onclick = signInUser;
+
+        document.querySelector(".activeUser").innerHTML = localStorage.user;
+      }
+
+      window.onload = init;
+    </script>
+  </head>
+  <body>
+    <div class="centerMeDiv">
+      <h1>Workout Tracker Sign-In Page</h1>
+
+      <div id="messageDiv">
+      </div>
+
+      <div id="createNewUserDiv">
+        <label for="createNewUserInput">Enter New User: </label>
+        <input id="createNewUserInput" type="text" placeholder="newuser123"></input>
+        <input id="createNewUserButton" type="button" value="Create User"></input>
+      </div>
+       
+      <div id="signInDiv">
+        <label for="signInInput">Sign In As: </label>
+        <input id="signInInput" type="text" placeholder="matthewroberts117"></input>
+        <input id="signInButton" type="button" value="Sign In"></input>
+      </div>
+
+    <footer>
+      <img src="logo-icon.png" alt="Lift Heavy Things!">
+      <p>&#169; 2021 Matt Roberts</p>
+    </footer>
+  </body>
+</html>
