@@ -28,7 +28,7 @@ const getAllUsers = () => {
   return JSON.stringify(responseObj());
 }
 
-const getAllUsersResponse = (request, response, params, acceptedTypes, httpMethod) => {
+const getAllUsersResponse = (request, response) => {
   const allUsersResponse = getAllUsers();
   return respond(request, response, 200, allUsersResponse, 'application/json', helperHandler.getBinarySize(allUsersResponse));
 }
@@ -131,7 +131,9 @@ const processWorkoutData = (JSONData) => {
       // check the set for empty data
       for (let j = 0; j < currentExercise.sets.length; j++) {
         let currentSet = currentExercise.sets[j];
-        if (currentSet.reps && currentSet.weight !== "" ) {}
+        if (!currentSet.reps || currentSet.weight !== "" || !currentSet.setDifficulty) {
+          return false;
+        }
       }
     } else {
       return false;
@@ -140,7 +142,7 @@ const processWorkoutData = (JSONData) => {
   return JSONData;
 }
 
-const postNewWorkout = (request, response, params, acceptedTypes, httpMethod) => {
+const postNewWorkout = (request, response, params) => {
   // get the params and parse the JSON
   let user = params.user;
   let workout = processWorkoutData(JSON.parse(params.data));
@@ -169,7 +171,7 @@ const postNewWorkout = (request, response, params, acceptedTypes, httpMethod) =>
   return respond(request, response, 201, content, 'text/html', length);
 }
 
-const postNewUser = (request, response, params, acceptedTypes, httpMethod) => {
+const postNewUser = (request, response, params) => {
   let user = params.user;
   // check the data for the user
   const data = JSON.parse(fs.readFileSync(`${__dirname}/../data/data.json`));
@@ -220,9 +222,9 @@ const postUserExists = (request, response, params, acceptedTypes, httpMethod) =>
   return respond(request, response, 201, content, 'application/JSON', length);
 }
 
-const deleteWorkout = (request, response, params, acceptedTypes, httpMethod) => {
-  
-}
+// const deleteWorkout = (request, response, params, acceptedTypes, httpMethod) => {
+//  
+// }
 
 module.exports = {
   getAllUsersResponse,
