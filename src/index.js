@@ -20,6 +20,7 @@ const urlStruct = {
   '/user-exists': jsonHandler.postUserExists,
   '/workout-upload': jsonHandler.postNewWorkout,
   '/workout-delete': jsonHandler.deleteWorkout,
+  '/exercise-delete': jsonHandler.deleteExercise,
   '/default-styles.css': htmlHandler.getDefaultStylesCSSResponse,
   '/logo.png': imageHandler.getLogoResponse,
   '/logo-icon.png': imageHandler.getLogoIconResponse,

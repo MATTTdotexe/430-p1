@@ -131,7 +131,7 @@ const processWorkoutData = (JSONData) => {
       // check the set for empty data
       for (let j = 0; j < currentExercise.sets.length; j++) {
         let currentSet = currentExercise.sets[j];
-        if (!currentSet.reps || currentSet.weight !== "" || !currentSet.setDifficulty) {
+        if (!currentSet.reps || currentSet.weight === "" || !currentSet.setDifficulty) {
           return false;
         }
       }
@@ -222,9 +222,147 @@ const postUserExists = (request, response, params) => {
   return respond(request, response, 201, content, 'application/JSON', length);
 }
 
-//const deleteWorkout = (request, response, params, acceptedTypes, httpMethod) => {
-// 
-//}
+const deleteWorkout = (request, response, params) => {
+  // were all parameters sent?
+  if (!params.user || !params.workoutIndex) {
+    // missings params, return an error
+    let content = { "missingParams": true };
+    content = JSON.stringify(content);
+    let length = helperHandler.getBinarySize(content);
+    return respond(request, response, 400, content, 'application/JSON', length);
+  }
+
+  let user = params.user;
+  let workoutIndex = parseInt(params.workoutIndex);
+  const data = JSON.parse(fs.readFileSync(`${__dirname}/../data/data.json`));
+
+  // validate user exists and get their data
+  let userData = "";
+  let userIndex = -1;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].user === user) {
+      userData = data[i];
+      userIndex = i;
+    }
+  }
+  if (!userData) {
+    // user does not exist, return an error
+    let content = `<p style="color:red;" font-weight="bold">User ${user} does not exist.</p>`;
+    content = JSON.stringify(content);
+    let length = helperHandler.getBinarySize(content);
+    return respond(request, response, 201, content, 'text/html', length);
+  }
+
+  // get the user's workout data
+  const workouts = userData.workouts;
+  // check if the requested index to delete is valid
+  if (workoutIndex > workouts.length - 1 || workoutIndex < 0) {
+    // workout index to delete is not valid, return an error
+    let content = `<p style="color:red;" font-weight="bold">Workout index invalid.</p>`;
+    content = JSON.stringify(content);
+    let length = helperHandler.getBinarySize(content);
+    return respond(request, response, 201, content, 'test/html', length);
+  }
+
+  // remove the item from the array of workouts
+  const updatedWorkouts = workouts;
+  updatedWorkouts.splice(workoutIndex, 1);
+  // update the user's data
+  let updatedUserData = userData;
+  updatedUserData.workouts = updatedWorkouts;
+  // update the overall data
+  let updatedData = data;
+  updatedData[userIndex] = updatedUserData;
+
+  // write back to the file
+  const newDataString = JSON.stringify(updatedData);
+  fs.writeFileSync(`${__dirname}/../data/data.json`, newDataString);
+
+  // return a success
+  let content = "";
+  content = JSON.stringify(content);
+  let length = helperHandler.getBinarySize(content);
+  return respond(request, response, 204, content, 'text/html', length);
+}
+
+const deleteExercise = (request, response, params) => {
+  // were all parameters sent?
+  if (!params.user || !params.workoutIndex || !params.exerciseIndex) {
+    // missings params, return an error
+    let content = { "missingParams": true };
+    content = JSON.stringify(content);
+    let length = helperHandler.getBinarySize(content);
+    return respond(request, response, 400, content, 'application/JSON', length);
+  }
+
+  let user = params.user;
+  let workoutIndex = parseInt(params.workoutIndex);
+  let exerciseIndex = parseInt(params.exerciseIndex);
+  const data = JSON.parse(fs.readFileSync(`${__dirname}/../data/data.json`));
+
+  // validate user exists and get their data
+  let userData = "";
+  let userIndex = -1;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].user === user) {
+      userData = data[i];
+      userIndex = i;
+    }
+  }
+  if (!userData) {
+    // user does not exist, return an error
+    let content = { "userExists": false };
+    content = JSON.stringify(content);
+    let length = helperHandler.getBinarySize(content);
+    return respond(request, response, 201, content, 'application/JSON', length);
+  }
+
+  // get the user's workout data
+  const workouts = userData.workouts;
+  // check if the requested index to delete is valid
+  if (workoutIndex > workouts.length - 1 || workoutIndex < 0) {
+    // workout index to delete is not valid, return an error
+    let content = { "workoutIndexValid": false };
+    content = JSON.stringify(content);
+    let length = helperHandler.getBinarySize(content);
+    return respond(request, response, 201, content, 'application/JSON', length);
+  }
+
+  // get the user's exercise data for the selected workout
+  const exercises = workouts[workoutIndex].exercises;
+  // check if the requested index to delete is valid
+  if (exerciseIndex > exercises.length - 1 || exerciseIndex < 0) {
+    // workout index to delete is not valid, return an error
+    let content = { "exerciseIndexValid": false };
+    content = JSON.stringify(content);
+    let length = helperHandler.getBinarySize(content);
+    return respond(request, response, 201, content, 'application/JSON', length);
+  }
+
+  // remove the item from the array of exercises
+  const updatedExercises = exercises;
+  updatedExercises.splice(exerciseIndex, 1);
+
+  // update the array of workouts
+  let updatedWorkouts = workouts;
+  updatedWorkouts[workoutIndex].exercises = updatedExercises;
+  // update the user's data
+  let updatedUserData = userData;
+  updatedUserData.workouts = updatedWorkouts;
+  // update the overall data
+  let updatedData = data;
+  updatedData[userIndex] = updatedUserData;
+
+  // write back to the file
+  const newDataString = JSON.stringify(updatedData);
+  fs.writeFileSync(`${__dirname}/../data/data.json`, newDataString);
+
+  // return a success
+  let content = `<p style="color:green;" font-weight="bold">Exercise deleted.</p>`;
+  content = JSON.stringify(content);
+  let length = helperHandler.getBinarySize(content);
+  return respond(request, response, 204, content, 'text/html', length);
+}
 
 module.exports = {
   getAllUsersResponse,
@@ -232,5 +370,6 @@ module.exports = {
   postNewWorkout,
   postNewUser,
   postUserExists,
-  //deleteWorkout
+  deleteWorkout,
+  deleteExercise
 };
