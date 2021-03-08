@@ -63,9 +63,10 @@
       }
 
       const downloadWorkouts = (e) => {
-        // console.log(`An element of id=${e.target.id} was clicked!`);
-
-        const user = document.querySelector("#userField").value;
+        if (!localStorage.getItem('user')) {
+          return;
+        }
+        const user = localStorage.getItem("user");
         const workoutsDataURL = "/workout-records?user=" + user;
         const xhr = new XMLHttpRequest();
         xhr.onload = handleResponse;
@@ -75,11 +76,26 @@
         xhr.setRequestHeader('Accept', "application/javascript");
         xhr.send();
       }
+
+      const showErrorMessage = (message) => {
+        let errorMessageDiv = document.querySelector("#errorMessageDiv");
+        errorMessageDiv.innerHTML = "";
+        
+        let newMessage = document.createElement("p");
+        newMessage.style.color = "red";
+        newMessage.style.fontWeight = "bold";
+        newMessage.innerHTML = message;
+        errorMessageDiv.appendChild(newMessage);
+      }
       
       const init = () => {
         document.querySelector("#getWorkoutsDataButton").addEventListener("click", downloadWorkouts);
 
-        document.querySelector(".activeUser").innerHTML = localStorage.user;
+        if (!localStorage.getItem('user')) {
+          showErrorMessage("You are not signed in. Please sign in.");
+        }
+        document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
+        document.querySelector("#userLabel").innerHTML = localStorage.getItem('user');
       }
       
       window.onload = init;
@@ -89,9 +105,9 @@
     <div class="centerMeDiv">
       <h1>Workout Tracker App Page</h1>
 
-      <label for="userField">User: </label>
-      <input id="userField" type="text" placeholder="matthewroberts117" value="matthewroberts117">
+      <div id="errorMessageDiv"></div>
 
+      <label for="getWorkoutsDataButton">Current User: <span id="userLabel"></span> </label>
       <input id="getWorkoutsDataButton" type="button" value="Get Data">
 
       <div id=workoutsDataDiv></div>

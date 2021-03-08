@@ -52,6 +52,8 @@
         if (obj.userExists) { // server says that user exists
           let user = document.querySelector("#signInInput").value; 
           localStorage.setItem("user", user); // save the user in local storage to use on other pages
+          // change user in the nav bar
+          document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
 
           showMessage(`User ${user} successfully signed in.`, "green");
         } else { // server says that user does not exist
@@ -92,7 +94,7 @@
         document.querySelector("#createNewUserButton").onclick = createNewUser;
         document.querySelector("#signInButton").onclick = signInUser;
 
-        document.querySelector(".activeUser").innerHTML = localStorage.user;
+        document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
       }
 
       window.onload = init;

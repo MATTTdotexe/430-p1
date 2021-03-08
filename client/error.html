@@ -3,8 +3,15 @@
     <title>404 - File Not Found!</title>
     <link rel="stylesheet" href="default-styles.css">
     <nav>
-      <a href="/">Home</a> | <a href="/app">App</a> | <a href="/upload">Upload</a> | <a href="/admin">Admin</a>
+      <a href="/">Home</a> | <a href="/app">App</a> | <a href="/upload">Upload</a> | <a href="/admin">Admin</a> | <a href="/sign-in">Sign-In</a> | <span class="activeUser"></span>
     </nav>
+    <script>
+      const init = () => {
+        document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
+      }
+
+      window.onload = init;
+    </script>
   </head>
   <body>
     <h1>404 - File Not Found!</h1>

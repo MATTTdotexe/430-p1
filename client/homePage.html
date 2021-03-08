@@ -19,7 +19,7 @@
         linkInputElement = document.querySelector("#userLinkInput").value = "";
 
         document.querySelector("#userLinkInput").oninput = changeLink;
-        document.querySelector(".activeUser").innerHTML = localStorage.user;
+        document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
       }
 
       window.onload = init;
@@ -31,6 +31,7 @@
       <p>This is the place to record your workouts and view them later! Start recording and view your progress over time!</p>
 
       <h2>Users</h2>
+      <p>Sign In: <a href="/sign-in">Here</a></p>
       <p>View your data: <a href="/app">Here</a></p>
       <p>Enter data: <a href="/upload">Here</a></p>
 

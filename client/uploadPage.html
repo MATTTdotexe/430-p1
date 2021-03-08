@@ -6,13 +6,6 @@
       <a href="/">Home</a> | <a href="/app">App</a> | <span id="current">Upload</span> | <a href="/admin">Admin</a> | <a href="/sign-in">Sign-In</a> | <span class="activeUser"></span>
     </nav>
     <script>
-      const handleResponse = (e) => {
-        // display the message that the server sends back after the POST
-        const obj = e.target.response;
-
-        showServerMessage(obj);
-      }
-
       const addSetRow = (e) => {
         // get the table element
         let parentDivID = "#" + e.currentTarget.parentElement.id;
@@ -115,6 +108,41 @@
         }
       }
 
+      const clearInputs = () => {
+        // clears all inputs on the screen, except for buttons
+        let allInputs = document.querySelectorAll("input");
+        allInputs.forEach(
+          function(currentValue) {
+            if (currentValue.type != "button") {
+              currentValue.value = "";
+            }
+          } 
+        );
+      }
+
+      const createClearFormButton = () => {
+        let messageDiv = document.querySelector("#messageDiv");
+        // check to see if the button still exists
+        if (messageDiv.children.length === 3) {
+          return;
+        } else {
+          // create button that clears the form labels
+          let clearFormButton = document.createElement("button");
+          clearFormButton.innerHTML = "Clear Form";
+          clearFormButton.onclick = removeClearFormButton;
+          messageDiv.appendChild(clearFormButton);
+        }
+      }
+
+      const removeClearFormButton = (e) => {
+        // the button will remove itself
+        e.target.remove();
+        // clear out other messages
+        showErrorMessage("");
+        // clear out user input
+        clearInputs();
+      }
+
       const uploadWorkout = (e) => {
         const user = localStorage.getItem('user');
         if (user === "") {
@@ -204,8 +232,8 @@
               }
 
             }
-            // add the set the array of sets
-            currentExercise.sets.push(currentSet);
+            // add a deep copy of the set the array of sets, since we need to use currentSet again if there are multiple sets
+            currentExercise.sets.push(JSON.parse(JSON.stringify(currentSet)));
 
           }
           // add the exercise to the array of exercises
@@ -214,6 +242,15 @@
         }
         // reset the error message
         return workoutDataJSON;
+      }
+
+      const handleResponse = (e) => {
+        // display the message that the server sends back after the POST
+        const obj = e.target.response;
+        showServerMessage(obj);
+        
+        // allow the user to clear the form once data has been uploaded
+        createClearFormButton();
       }
 
       const showErrorMessage = (message) => {
@@ -243,7 +280,10 @@
         document.querySelector("#removeExerciseTableButton").addEventListener("click", removeExerciseTable);
         document.querySelector("#uploadWorkoutButton").addEventListener("click", uploadWorkout);
 
-        document.querySelector(".activeUser").innerHTML = localStorage.user;
+        if (!localStorage.getItem('user')) {
+          showErrorMessage("You are not signed in. Please sign in.");
+        }
+        document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
       }
       
       window.onload = init;
