@@ -233,7 +233,7 @@ const deleteWorkout = (request, response, params) => {
   }
 
   let user = params.user;
-  let workoutIndex = parseInt(params.workoutIndex);
+  let workoutIndex = parseInt(params.workoutIndex, 10);
   const data = JSON.parse(fs.readFileSync(`${__dirname}/../data/data.json`));
 
   // validate user exists and get their data
@@ -296,8 +296,8 @@ const deleteExercise = (request, response, params) => {
   }
 
   let user = params.user;
-  let workoutIndex = parseInt(params.workoutIndex);
-  let exerciseIndex = parseInt(params.exerciseIndex);
+  let workoutIndex = parseInt(params.workoutIndex, 10);
+  let exerciseIndex = parseInt(params.exerciseIndex, 10);
   const data = JSON.parse(fs.readFileSync(`${__dirname}/../data/data.json`));
 
   // validate user exists and get their data
