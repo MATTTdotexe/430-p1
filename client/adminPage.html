@@ -6,6 +6,16 @@
       <a href="/">Home</a> | <a href="/app">App</a> | <a href="/upload">Upload</a> | <span id="current">Admin</span> | <a href="/sign-in">Sign-In</a> | <span class="activeUser"></span>
     </nav>
     <script>
+      const getAllUsers = () => {
+        const getAllUsersURL = "/users";
+
+        const xhr = new XMLHttpRequest();
+        xhr.onload = handleGetAllUsersResponse;
+        xhr.open("GET", getAllUsersURL);
+        xhr.setRequestHeader('Accept', "application/json");
+        xhr.send();
+      }
+
       const handleGetAllUsersResponse = (e) => {
         // this should be an JSON array of all the users in the system
         const obj = JSON.parse(e.target.response);
@@ -22,12 +32,14 @@
         }
       }
 
-      const getAllUsers = () => {
-        const getAllUsersURL = "/users";
+      const getUserData = (e) => {
+        const user = e.target.id;
+
+        const getUserDataURL = "/workout-records?user=" + user;
 
         const xhr = new XMLHttpRequest();
-        xhr.onload = handleGetAllUsersResponse;
-        xhr.open("GET", getAllUsersURL);
+        xhr.onload = handleGetUserDataResponse;
+        xhr.open("GET", getUserDataURL);
         xhr.setRequestHeader('Accept', "application/json");
         xhr.send();
       }
@@ -42,26 +54,17 @@
         generateDataDeleteButtons();
       }
 
-      const getUserData = (e) => {
-        const user = e.target.id;
-
-        const getUserDataURL = "/workout-records?user=" + user;
-
-        const xhr = new XMLHttpRequest();
-        xhr.onload = handleGetUserDataResponse;
-        xhr.open("GET", getUserDataURL);
-        xhr.setRequestHeader('Accept', "application/json");
-        xhr.send();
-      }
-
       const buildHTML = (data) => {
         if (typeof data === "string") {
           return `<h3>${data}</h3>`;
         }
 
         let workouts = data["workouts"];
+        if (workouts.length === 0) {
+          return `<p>${data["user"]} has no uploaded workouts yet.</p>`;
+        }
         let responseHTML = `<div class="allDataDiv">
-          <h2>Data for user: ${data["user"]}</h2>`;
+          <h2>Data for user: <span id="currentUserDisplayed">${data["user"]}</span></h2>`;
         for (let i = 0; i < Object.keys(workouts).length; i++) {
           let exercises = workouts[i]["exercises"];
           responseHTML += `<div class="workoutDiv">
@@ -131,17 +134,71 @@
       }
 
       const deleteWorkout = (e) => {
-        
+        const buttonPressed = e.target;
+        let user = document.querySelector("#currentUserDisplayed").innerHTML;
+        // get the index of the workout by looking at the index of the element in its parent's-parent's children elements
+        let workoutIndex = Array.from(buttonPressed.parentNode.parentNode.children).indexOf(buttonPressed.parentNode) - 1; // subtract one because there is an h2 element on top
+
+        const deleteWorkoutURL = "/workout-delete?user=" + user + "&workoutIndex=" + workoutIndex;
+
+        const xhr = new XMLHttpRequest();
+        xhr.onload = deleteWorkoutResponse;
+        xhr.open("DELETE", deleteWorkoutURL);
+        xhr.setRequestHeader('Accept', "text/html");
+        xhr.send();
+      }
+
+      const deleteWorkoutResponse = (e) => {
+        // check for positive response
+        if (e.target.status === 204) {          
+          // reload the user data for the current user
+          let currentuser = document.querySelector("#currentUserDisplayed").innerHTML;
+          getUserData({ "target": { "id": currentuser }});
+
+        } else if (e.target.status === 201) {
+          // show the error message sent from the server
+          let response = e.target.response;
+          let messageDiv = document.querySelector("#messageDiv");
+          messageDiv.innerHTML = response;
+        }
       }
 
       const deleteExercise = (e) => {
+        const buttonPressed = e.target;
+        let user = document.querySelector("#currentUserDisplayed").innerHTML;
+        // get the index of the workout by looking at the index of the element in its parent's-parent's-parent's children elements
+        let workoutIndex = Array.from(buttonPressed.parentNode.parentNode.parentNode.children).indexOf(buttonPressed.parentNode.parentNode) - 1;  // subtract one because there is an h2 element on top
+        // gets the index of the exercise in the workout by looking at the index of the element in its parent's-parent's children elements
+        let exerciseIndex = Array.from(buttonPressed.parentNode.parentNode.children).indexOf(buttonPressed.parentNode) - 2; // subtract 2 because there is an h3 element and the delete workout button element
 
+        const deleteWorkoutURL = "/exercise-delete?user=" + user + "&workoutIndex=" + workoutIndex + "&exerciseIndex=" + exerciseIndex;
+
+        const xhr = new XMLHttpRequest();
+        xhr.onload = deleteExerciseResponse;
+        xhr.open("DELETE", deleteWorkoutURL);
+        xhr.setRequestHeader('Accept', "test/html");
+        xhr.send();
+      }
+
+      const deleteExerciseResponse = (e) => {
+        // check for positive response
+        if (e.target.status === 204) {          
+          // reload the user data for the current user
+          let currentuser = document.querySelector("#currentUserDisplayed").innerHTML;
+          getUserData({ "target": { "id": currentuser }});
+
+        } else if (e.target.status === 201) {
+          // show the error message sent from the server
+          let response = e.target.response;
+          let messageDiv = document.querySelector("#messageDiv");
+          messageDiv.innerHTML = response;
+        }
       }
 
       const init = () => {
         getAllUsers();
 
-        document.querySelector(".activeUser").innerHTML = localStorage.user;
+        document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
       }
 
       window.onload = init;
@@ -151,13 +208,9 @@
     <div class="centerMeDiv">
       <h1>Workout Tracker Admin Page</h1>
 
-      <div id="usersDiv">
-        
-      </div>
-
-      <div id="dataDiv">
-        
-      </div>
+      <div id="usersDiv"></div>
+      <div id="messageDiv"></div>
+      <div id="dataDiv"></div>
 
       <footer>
         <img src="logo-icon.png" alt="Lift Heavy Things!">
