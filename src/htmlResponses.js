@@ -32,7 +32,7 @@ const getAdminPageResponse = (request, response) => {
 
 const getSignInPageResponse = (request, response) => {
   getResponse(request, response, 200, 'text/html', signInPage);
-}
+};
 
 const get404Response = (request, response) => {
   getResponse(request, response, 404, 'text/html', errorPage);

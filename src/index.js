@@ -3,7 +3,10 @@ const url = require('url');
 const query = require('querystring');
 
 const htmlHandler = require('./htmlResponses.js');
-const jsonHandler = require('./responses.js');
+const getHandler = require('./getResponses.js');
+const postHandler = require('./postResponses.js');
+const deleteHandler = require('./deleteResponses.js');
+
 const imageHandler = require('./imageResponses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
@@ -14,28 +17,31 @@ const urlStruct = {
   '/upload': htmlHandler.getUploadPageResponse,
   '/admin': htmlHandler.getAdminPageResponse,
   '/sign-in': htmlHandler.getSignInPageResponse,
-  '/workout-records': jsonHandler.getAllWorkoutsResponse,
-  '/users': jsonHandler.getAllUsersResponse,
-  '/user-upload': jsonHandler.postNewUser,
-  '/user-exists': jsonHandler.postUserExists,
-  '/workout-upload': jsonHandler.postNewWorkout,
-  '/workout-delete': jsonHandler.deleteWorkout,
-  '/exercise-delete': jsonHandler.deleteExercise,
   '/default-styles.css': htmlHandler.getDefaultStylesCSSResponse,
+
+  '/user-exists': getHandler.getUserExistsResponse,
+  '/users': getHandler.getAllUsersResponse,
+  '/workout-records': getHandler.getAllWorkoutsResponse,
+
+  '/user-upload': postHandler.postNewUserResponse,
+  '/workout-upload': postHandler.postNewWorkoutResponse,
+
+  '/workout-delete': deleteHandler.deleteWorkoutResponse,
+  '/exercise-delete': deleteHandler.deleteExerciseResponse,
+
   '/logo.png': imageHandler.getLogoResponse,
   '/logo-icon.png': imageHandler.getLogoIconResponse,
+
   notFound: htmlHandler.get404Response,
 };
 
-// 7 - this is the function that will be called every time a client request comes in
 const onRequest = (request, response) => {
-  // url parsing
+  // get the parameters from the URL
   const parsedUrl = url.parse(request.url);
   const { pathname } = parsedUrl;
   const params = query.parse(parsedUrl.query);
   const httpMethod = request.method;
-
-  // get the headers
+  // get the headers and pass them in
   let acceptedTypes = request.headers.accept && request.headers.accept.split(',');
   acceptedTypes = acceptedTypes || [];
 
@@ -46,6 +52,4 @@ const onRequest = (request, response) => {
   }
 };
 
-// 8 - create the server, hook up the request handling function, and start listening on `port`
 http.createServer(onRequest).listen(port);
-// console.log(`Listening on 127.0.0.1: ${port}`);
