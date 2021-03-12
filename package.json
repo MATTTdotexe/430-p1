@@ -7,7 +7,8 @@
     "pretest": "eslint ./src --fix",
     "test": "echo \"Tests complete\"",
     "start": "node ./src/index.js",
-    "nodemon": "nodemon ./src/index.js -e js,html,css"
+    "nodemon": "nodemon ./src/index.js -e js,html,css",
+    "chromeinspect": "node --inspect ./src/index.js & echo \"Now in DEBUG mode. Head to 'chrome://inspect'\""
   },
   "keywords": [],
   "author": "",
@@ -18,5 +19,8 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "bulma": "^0.9.2"
   }
 }
