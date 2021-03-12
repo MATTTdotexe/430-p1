@@ -1,31 +1,54 @@
+<!DOCTYPE html>
 <html>
-  <head>
+  <head class="has-background-primary">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Workout Tracker App Page</title>
-    <link rel="stylesheet" href="default-styles.css">
-    <nav>
-      <a href="/">Home</a> | <span id="current">App</span> | <a href="/upload">Upload</a> | <a href="/admin">Admin</a> | <a href="/sign-in">Sign-In</a> | <span class="activeUser"></span>
-    </nav>
+    <link rel="stylesheet" href="default-styles.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"/>
     <script>
+      // shows a message on screen in a dedicated div
+      const showMessage = (message, color = '') => {
+        let messageDiv = document.querySelector("#messageDiv");
+        messageDiv.innerHTML = "";
+
+        // treat the message as HTML already if no color is given
+        if (color === "") {
+          messageDiv.innerHTML = message;
+        } else {
+          let newMessage = document.createElement("p");
+          newMessage.style.color = color;
+          newMessage.style.fontWeight = "bold";
+          newMessage.innerHTML = message;
+          messageDiv.appendChild(newMessage);
+        }
+      }
+
+      // takes a JSON object of user data and structures it as HTML for the page
       const buildHTML = (data) => {
+        // if given a string instead of JSON, post it as a message
         if (typeof data === "string") {
-          return `<h3>${data}</h3>`;
+          showMessage(data);
+          return;
         }
 
+        let responseHTML = `<div class="allDataDiv section tile is-ancestor is-vertical box has-background-primary">
+          <p class="title">Data for user: ${data["user"]}</p>`;
+
+        // loop though the workouts
         let workouts = data["workouts"];
-        let responseHTML = `<div class="allDataDiv">
-          <h2>Data for user: ${data["user"]}</h2>`;
         for (let i = 0; i < Object.keys(workouts).length; i++) {
           let exercises = workouts[i]["exercises"];
-          responseHTML += `<div class="workoutDiv">
-            <h3>Date: ${workouts[i].date} | Type: ${workouts[i].type} | Overall Difficulty: ${workouts[i].overallDifficulty}</h3>
+          responseHTML += `<div class="workoutDiv container tile is-parent is-vertical box">
+            <p class="subtitle">Date: ${workouts[i].date} | Type: ${workouts[i].type} | Overall Difficulty: ${workouts[i].overallDifficulty}</p>
           `;
 
-          // write HTML for each exercise
+          // loop through and write HTML for each exercise
           for (let j = 0; j < Object.keys(exercises).length; j++) {
             let sets = exercises[j]["sets"];
-            responseHTML += `<div class="exerciseDiv">
-              <h4>Exercise Name: ${exercises[j].name}</h4>
-              <table>
+            responseHTML += `<div class="exerciseDiv container tile is-child is-vertical box has-background-grey-lighter">
+              <p class="subtitle">Exercise Name: ${exercises[j].name}</p>
+              <table class="table is-bordered is-striped is-narrow is-hoverable">
                <tr>
                 <th>Set #</th>
                 <th>Reps</th>
@@ -34,7 +57,7 @@
                </tr>
             `;
 
-            // write HTML for each set
+            // loop through and write HTML for each set
             for (let k = 0; k < Object.keys(sets).length; k++) {
               responseHTML += `
                 <tr>
@@ -56,66 +79,80 @@
         return responseHTML;
       }
 
-      const handleResponse = (e) => {
-        const obj = JSON.parse(e.target.response);
-
-        document.querySelector("#workoutsDataDiv").innerHTML = buildHTML(obj);
-      }
-
-      const downloadWorkouts = (e) => {
+      // asks the server for all workout records for a given user through a GET request
+      const getWorkoutsRequest = (e) => {
+        // check if anyone is signed in
         if (!localStorage.getItem('user')) {
+          showMessage("Please go to the Sign-In Page and sign in", "red");
           return;
+        } else {
+          const user = localStorage.getItem("user");
+          // create the URL
+          const workoutsDataURL = "/workout-records?user=" + user;
+
+          const xhr = new XMLHttpRequest();
+          xhr.onload = handleGetWorkoutsResponse;
+          xhr.open("GET", workoutsDataURL);
+          xhr.setRequestHeader('Accept', "application/JSON");
+          xhr.send();
         }
-        const user = localStorage.getItem("user");
-        const workoutsDataURL = "/workout-records?user=" + user;
-        const xhr = new XMLHttpRequest();
-        xhr.onload = handleResponse;
-        xhr.open("GET", workoutsDataURL);
-        // with XHR, after we open a connection, but before we 'send()', we can set 1 or more HTTP request headers
-        // this isn't strictly necessary because "/random-joke" sends JSON by default
-        xhr.setRequestHeader('Accept', "application/javascript");
-        xhr.send();
       }
 
-      const showErrorMessage = (message) => {
-        let errorMessageDiv = document.querySelector("#errorMessageDiv");
-        errorMessageDiv.innerHTML = "";
-        
-        let newMessage = document.createElement("p");
-        newMessage.style.color = "red";
-        newMessage.style.fontWeight = "bold";
-        newMessage.innerHTML = message;
-        errorMessageDiv.appendChild(newMessage);
+      // handles the response from the server once it sends back the workout data
+      const handleGetWorkoutsResponse = (e) => {
+        const obj = JSON.parse(e.target.response);
+        console.log(obj);
+        document.querySelector("#workoutsDataDiv").innerHTML = buildHTML(obj);
       }
       
       const init = () => {
-        document.querySelector("#getWorkoutsDataButton").addEventListener("click", downloadWorkouts);
+        document.querySelector("#getWorkoutsDataButton").addEventListener("click", getWorkoutsRequest);
+        let user = localStorage.getItem('user');
+        document.querySelector("#activeUser").innerHTML = user;
+        let activeUserSpan = document.querySelector("#userLabel");
 
+        // check to see if a user is signed in
         if (!localStorage.getItem('user')) {
-          showErrorMessage("You are not signed in. Please sign in.");
+          showMessage("You are not signed in. Please sign in.", "red");
+          activeUserSpan.innerHTML = "";
+        } else {
+          activeUserSpan.innerHTML = user;
         }
-        document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
-        document.querySelector("#userLabel").innerHTML = localStorage.getItem('user');
       }
       
       window.onload = init;
     </script>
   </head>
   <body>
-    <div class="centerMeDiv">
-      <h1>Workout Tracker App Page</h1>
+    <nav class="columns tile is-ancestor box has-background-info">
+      <a class="column tag tile is-parent box has-background-link" href="/">Home</a>
+      <a class="column tag tile is-parent box has-background-link" href="/app">App</a>
+      <a class="column tag tile is-parent box has-background-link" href="/upload">Upload</a>
+      <a class="column tag tile is-parent box has-background-link" href="/admin">Admin</a>
+      <a class="column tag tile is-parent box has-background-link" href="/sign-in">Sign-In</a>
+      <span class="column tag tile is-parent box has-background-success" id="activeUser"></span>
+    </nav>
+    
+    <div class="section columns tile is-ancestor box has-background-primary">
 
-      <div id="errorMessageDiv"></div>
+      <div class="column is-three-fifths is-offset-one-fifth centerMeDiv tile is-parent is-vertical box has-background-info">
 
-      <label for="getWorkoutsDataButton">Current User: <span id="userLabel"></span> </label>
-      <input id="getWorkoutsDataButton" type="button" value="Get Data">
+        <p class="title">Workout Tracker App Page</p>
 
-      <div id=workoutsDataDiv></div>
+        <div class="container" id="messageDiv"></div>
 
-      <footer>
-        <img src="logo-icon.png" alt="Lift Heavy Things!">
-        <p>&#169; 2021 Matt Roberts</p>
-      </footer>
+        <div class="container tile is-parent is-vertical box has-background-primary" id="getDataDiv">
+          <label for="getWorkoutsDataButton">Current User: <span id="userLabel"></span></label>
+          <input class="button tag is-link is-small is-link is-outlined" id="getWorkoutsDataButton" type="button" value="Get Data"/>
+        </div>
+
+        <div class="container tile is-parent is-vertical" id="workoutsDataDiv"></div>
+
+        <footer>
+          <img src="logo-icon.png" alt="Lift Heavy Things!"/>
+          <p>&#169; 2021 Matt Roberts</p>
+        </footer>
+      </div>
     </div>
   </body>
 </html>

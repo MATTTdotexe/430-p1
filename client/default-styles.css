@@ -3,8 +3,12 @@
 	color: black;
 }
 
-button {
+.deleteButton {
 	margin: .5em;
+}
+
+.dataDiv {
+	padding: 3em;
 }
 
 .centerMeDiv {
@@ -12,10 +16,6 @@ button {
 	margin-left: auto;
 	margin-right: auto;
 	width: 50%;
-}
-
-#createNewUserDiv, #signInDiv {
-	text-align: left;
 }
 
 #current {
@@ -103,7 +103,7 @@ input.exerciseName {
 	width: 10em;
 }
 
-.allDataDiv, .workoutDiv, .exerciseDiv {
+.workoutDiv, .exerciseDiv {
 	padding: .5em;
 }
 
@@ -114,6 +114,14 @@ input.exerciseName {
 .exerciseDiv {
 	margin: .5em;
 	border: 2px dashed black;
+}
+
+#usersDiv, #messageDiv, #dataDiv {
+	margin-bottom: 3em;
+}
+
+#createNewUserDiv, #signInDiv {
+	margin-top: 2em;
 }
 
 footer {

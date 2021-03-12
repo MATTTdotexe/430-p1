@@ -1,10 +1,12 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Workout Tracker Sign-In Page</title>
     <title>Workout Tracker Admin Page</title>
-    <link rel="stylesheet" href="default-styles.css">
-    <nav>
-      <a href="/">Home</a> | <a href="/app">App</a> | <a href="/upload">Upload</a> | <span id="current">Admin</span> | <a href="/sign-in">Sign-In</a> | <span class="activeUser"></span>
-    </nav>
+    <link rel="stylesheet" href="default-styles.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"/>
     <script>
       const getAllUsers = () => {
         const getAllUsersURL = "/users";
@@ -27,6 +29,7 @@
           // set up the button element
           userButton.id = obj[i];
           userButton.innerHTML = obj[i];
+          userButton.className = "button is-info is-small is-outlined"
           userButton.addEventListener("click", getUserData);
           usersDiv.appendChild(userButton);
         }
@@ -63,20 +66,20 @@
         if (workouts.length === 0) {
           return `<p>${data["user"]} has no uploaded workouts yet.</p>`;
         }
-        let responseHTML = `<div class="allDataDiv">
-          <h2>Data for user: <span id="currentUserDisplayed">${data["user"]}</span></h2>`;
+        let responseHTML = `<div class="allDataDiv section tile is-ancestor is-vertical box has-background-primary">
+          <p class="title">Data for user: <span id="currentUserDisplayed">${data["user"]}</span></p>`;
         for (let i = 0; i < Object.keys(workouts).length; i++) {
           let exercises = workouts[i]["exercises"];
-          responseHTML += `<div class="workoutDiv">
-            <h3>Date: ${workouts[i].date} | Type: ${workouts[i].type} | Overall Difficulty: ${workouts[i].overallDifficulty}</h3>
+          responseHTML += `<div class="workoutDiv container tile is-parent is-vertical box">
+            <p class="subtitle">Date: ${workouts[i].date} | Type: ${workouts[i].type} | Overall Difficulty: ${workouts[i].overallDifficulty}</p>
           `;
 
           // write HTML for each exercise
           for (let j = 0; j < Object.keys(exercises).length; j++) {
             let sets = exercises[j]["sets"];
-            responseHTML += `<div class="exerciseDiv">
-              <h4>Exercise Name: ${exercises[j].name}</h4>
-              <table>
+            responseHTML += `<div class="exerciseDiv container tile is-child is-vertical box has-background-grey-lighter">
+              <p class="subtitle">Exercise Name: ${exercises[j].name}</p>
+              <table class="table is-bordered is-striped is-narrow is-hoverable">
                <tr>
                 <th>Set #</th>
                 <th>Reps</th>
@@ -117,6 +120,7 @@
           let currentWorkoutDiv = allWorkoutDivs[i];
           let deleteWorkoutButton = document.createElement("button");
           deleteWorkoutButton.innerHTML = "Delete Workout";
+          deleteWorkoutButton.className = "deleteButton button is-danger is-outlined";
           deleteWorkoutButton.addEventListener("click", deleteWorkout);
           // insert the button just after the main workout info
           currentWorkoutDiv.insertBefore(deleteWorkoutButton, currentWorkoutDiv.children[1]);
@@ -127,6 +131,7 @@
           let currentExerciseDiv = allExerciseDivs[i];
           let deleteExerciseButton = document.createElement("button");
           deleteExerciseButton.innerHTML = "Delete Exercise";
+          deleteExerciseButton.className = "deleteButton button is-danger is-outlined";
           deleteExerciseButton.addEventListener("click", deleteExercise);
           // insert the button just after the main exercise info
           currentExerciseDiv.insertBefore(deleteExerciseButton, currentExerciseDiv.children[1]);
@@ -198,24 +203,38 @@
       const init = () => {
         getAllUsers();
 
-        document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
+        document.querySelector("#activeUser").innerHTML = localStorage.getItem('user');
       }
 
       window.onload = init;
     </script>
   </head>
   <body>
-    <div class="centerMeDiv">
-      <h1>Workout Tracker Admin Page</h1>
+    <nav class="columns tile is-ancestor box has-background-info">
+      <a class="column tag tile is-parent box has-background-link" href="/">Home</a>
+      <a class="column tag tile is-parent box has-background-link" href="/app">App</a>
+      <a class="column tag tile is-parent box has-background-link" href="/upload">Upload</a>
+      <a class="column tag tile is-parent box has-background-link" href="/admin">Admin</a>
+      <a class="column tag tile is-parent box has-background-link" href="/sign-in">Sign-In</a>
+      <span class="column tag tile is-parent box has-background-success" id="activeUser"></span>
+    </nav>
 
-      <div id="usersDiv"></div>
-      <div id="messageDiv"></div>
-      <div id="dataDiv"></div>
+    <div class="section columns tile is-ancestor box has-background-primary">
 
-      <footer>
-        <img src="logo-icon.png" alt="Lift Heavy Things!">
-        <p>&#169; 2021 Matt Roberts</p>
-      </footer>
+      <div class="column is-three-fifths is-offset-one-fifth centerMeDiv tile is-parent is-vertical box has-background-info">
+
+        <p class="title">Workout Tracker Admin Page</p>
+        <p class="subtitle">Select A User</p>
+
+        <div class="container tile is-child box has-background-primary" id="usersDiv"></div>
+        <div class="container" id="messageDiv"></div>
+        <div class="container tile is-parent is-vertical" id="dataDiv"></div>
+
+        <footer>
+          <img src="logo-icon.png" alt="Lift Heavy Things!"/>
+          <p>&#169; 2021 Matt Roberts</p>
+        </footer>
+      </div>
     </div>
   </body>
 </html>

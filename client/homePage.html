@@ -1,54 +1,99 @@
+<!DOCTYPE html>
 <html>
-  <head>
+  <head class="has-background-primary">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Workout Tracker Home Page</title>
-    <link rel="stylesheet" href="default-styles.css">
-    <nav>
-      <span id="current">Home</span> | <a href="/app">App</a> | <a href="/upload">Upload</a> | <a href="/admin">Admin</a> | <a href="/sign-in">Sign-In</a> | <span class="activeUser"></span>
-    </nav>
+    <link rel="stylesheet" href="default-styles.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"/>
     <script>
-      const changeLink = () => {
-        let linkElement = document.querySelector("#userLink");
-        let linkInputElement = document.querySelector("#userLinkInput");
+      // immediately called when get data is clicked
+      const getDataClicked = () => {
+        let user = document.querySelector("#enterUserInput").value;
+        // check if a user was entered
+        if (user === "") {
+          // remove a previous message if needed
+          let messageDiv = document.querySelector("#messageDiv");
+          messageDiv.innerHTML = "";
 
-        // update the link using the value of the input
-        linkElement.href = `/workout-records?user=${linkInputElement.value}`;
+          // create and append a new message
+          let messageElement = document.createElement("p");
+          messageElement.style.color = "red";
+          messageElement.style.fontWeight = "bold";
+          messageElement.innerHTML = "Please enter a user.";
+          messageDiv.appendChild(messageElement);
+        } else {
+          userDataRequest();
+        }
+      }
+
+      // redirects to a page that shows all user data as JSON
+      const userDataRequest = () => {
+        let user = document.querySelector("#enterUserInput").value;
+        // create the URL
+        const userDataURL = "/workout-records?user=" + user;
+        // redirect the page
+        window.location.href = userDataURL
       }
 
       const init = () => {
-        // clear the input when the page is loaded
-        linkInputElement = document.querySelector("#userLinkInput").value = "";
-
-        document.querySelector("#userLinkInput").oninput = changeLink;
-        document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
+        // sets the current user in the nav bar
+        document.querySelector("#activeUser").innerHTML = localStorage.getItem('user');
       }
 
       window.onload = init;
     </script>
   </head>
   <body>
-    <div>
-      <h1>Workout Tracker Home Page</h1>
-      <p>This is the place to record your workouts and view them later! Start recording and view your progress over time!</p>
+    <nav class="columns tile is-ancestor box has-background-info">
+      <a class="column tag tile is-parent box has-background-link" href="/">Home</a>
+      <a class="column tag tile is-parent box has-background-link" href="/app">App</a>
+      <a class="column tag tile is-parent box has-background-link" href="/upload">Upload</a>
+      <a class="column tag tile is-parent box has-background-link" href="/admin">Admin</a>
+      <a class="column tag tile is-parent box has-background-link" href="/sign-in">Sign-In</a>
+      <span class="column tag tile is-parent box has-background-success" id="activeUser"></span>
+    </nav>
+    
+    <div class="section columns tile is-ancestor box has-background-primary">
 
-      <h2>Users</h2>
-      <p>Sign In: <a href="/sign-in">Here</a></p>
-      <p>View your data: <a href="/app">Here</a></p>
-      <p>Enter data: <a href="/upload">Here</a></p>
+      <div class="column is-three-fifths is-offset-one-fifth centerMeDiv tile is-parent is-vertical box has-background-info">
 
-      <h2>Developers</h2>
-      <p>My (Matt Roberts's) user data: <a href="/workout-records?user=matthewroberts117">Here</a></p>
-      <p><input id="userLinkInput" type="text" placeholder="Enter user">'s user data: <a id="userLink" href="/workout-records?user=">Here</a></p>
+        <p class="title">Workout Tracker Home Page</p>
+        <p class="subtitle">This is the place to record your workouts and view them later! Start recording and view your progress over time!</p>
 
-      <h2>Admins</h2>
-      <p>Admin page: <a href="/admin">Here</a></p>
-      <p>404 page: <a href="/link-that-goes-to-nowhere">Here</a></p>
-      <p>Style Sheet: <a href="/default-styles.css">Here</a></p>
-      <p>Logo: <a href="/logo.png">Here</a></p>
+        <div class="container tile is-child is-vertical box has-background-primary" id="forUsersDiv">
+          <p class="subtitle">Users</p>
+          <p><a class="tag is-link" href="/sign-in">Sign-In</a></p>
+          <p><a class="tag is-link" href="/app">App Page</a></p>
+          <p><a class="tag is-link" href="/upload">Upload Page</a></p>
+        </div>
+        
+        <div class="container tile is-child is-vertical box has-background-warning" id="forDevelopersDiv">
+          <p class="subtitle">Developers</p>
+          <p><a class="tag is-link" href="/workout-records?user=matthewroberts117">Matt Roberts's User Data</a></p>
 
-      <footer>
-        <img src="logo-icon.png" alt="Lift Heavy Things!">
-        <p>&#169; 2021 Matt Roberts</p>
-      </footer>
+          <div id="messageDiv"></div>
+
+          <!-- HIJACKED FORM USE -->
+          <form id="showUserDataForm" onsubmit="getDataClicked(); return false;">
+            <input id="enterUserInput" type="text" placeholder="Enter user" size="15"/>
+            <button class="button tag is-link is-small is-outlined" id="getDataButton" type="submit" >Get Data</button>
+          </form>
+        </div>
+        
+        <div class="container tile is-child is-vertical box has-background-danger" id="forAdminsDiv">
+          <p class="subtitle">Admins</p>
+          <p><a class="tag is-link" href="/admin">Admin Page</a></p>
+          <p><a class="tag is-link" href="/link-that-goes-to-nowhere">404 Page</a></p>
+          <p><a class="tag is-link" href="/default-styles.css">Style Sheet</a></p>
+          <p><a class="tag is-link" href="/logo.png">Logo</a></p>
+        </div>
+
+        <footer>
+          <img src="logo-icon.png" alt="Lift Heavy Things!"/>
+          <p>&#169; 2021 Matt Roberts</p>
+        </footer>
+      </div>
     </div>
   </body>
 </html>

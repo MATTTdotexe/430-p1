@@ -1,10 +1,11 @@
+<!DOCTYPE html>
 <html>
-  <head>
+  <head class="has-background-primary">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Workout Tracker Upload Page</title>
-    <link rel="stylesheet" href="default-styles.css">
-    <nav>
-      <a href="/">Home</a> | <a href="/app">App</a> | <span id="current">Upload</span> | <a href="/admin">Admin</a> | <a href="/sign-in">Sign-In</a> | <span class="activeUser"></span>
-    </nav>
+    <link rel="stylesheet" href="default-styles.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"/>
     <script>
       const addSetRow = (e) => {
         // get the table element
@@ -22,7 +23,7 @@
             let newCell = newRow.insertCell(i);
             let newInput = document.createElement("input");
             newInput.type = "number";
-            newInput.className = "tableInputs";
+            newInput.className = "tableInputs input is-link";
             newInput.addEventListener('input', function(){this.validity.valid||(this.value='');}, true);
             if (i === 0) { // reps 
               newInput.min = 1;
@@ -66,23 +67,24 @@
           let newExerciseDiv = document.createElement('div');
           let index = parentDiv.children.length + 1;
           newExerciseDiv.id = "exerciseDiv" + index;
+          newExerciseDiv.className = "tile is-child is-vertical box has-background-primary";
           const newHTMLTable = `
             <label class="exerciseName" for="exerciseNameField${index}">Exercise Name: </label>
-            <input class="exerciseName" id="exerciseNameField${index}" type="text"></input>
-            <table class="exerciseTable">
+            <input class="exerciseName input is-small is-link" id="exerciseNameField${index}" type="text"></input>
+            <table class="exerciseTable table is-bordered is-striped is-narrow tile is-child box">
               <tr>
                 <th>Reps</th>
                 <th>Weight</th>
                 <th>Set Difficulty</th>
               </tr>
               <tr>
-                <td><input class="tableInputs" type="number" min="1" max="50" step="1" oninput="validity.valid||(value='');"></input></td>
-                <td><input class="tableInputs" type="number" min="0" max="2000"></input></td>
-                <td><input class="tableInputs" type="number" min="1" max="10" step="1" oninput="validity.valid||(value='');"></input></td>
+                <td><input class="tableInputs input is-link" type="number" min="1" max="50" step="1" oninput="validity.valid||(value='');"></input></td>
+                <td><input class="tableInputs input is-link" type="number" min="0" max="2000"></input></td>
+                <td><input class="tableInputs input is-link" type="number" min="1" max="10" step="1" oninput="validity.valid||(value='');"></input></td>
               </tr>
             </table>
-            <input class="exerciseButton" id="addSetRowButton${index}" type="button" value="Add Row"></input>
-            <input class="exerciseButton" id="removeSetRowButton${index}" type="button" value="Remove Row"></input>
+            <input class="exerciseButton button is-info is-small" id="addSetRowButton${index}" type="button" value="Add Row"></input>
+            <input class="exerciseButton button is-danger is-small" id="removeSetRowButton${index}" type="button" value="Remove Row"></input>
             `;
           newExerciseDiv.innerHTML = newHTMLTable;
           // insert the new element before the new exercise button
@@ -129,6 +131,7 @@
           // create button that clears the form labels
           let clearFormButton = document.createElement("button");
           clearFormButton.innerHTML = "Clear Form";
+          clearFormButton.className = "button is-danger is-small";
           clearFormButton.onclick = removeClearFormButton;
           messageDiv.appendChild(clearFormButton);
         }
@@ -144,6 +147,9 @@
       }
 
       const uploadWorkout = (e) => {
+        // scroll to the top of the page, so the user can see the error or success message
+        document.documentElement.scrollTop = 0;
+
         const user = localStorage.getItem('user');
         if (user === "") {
           showErrorMessage("You are not signed in. Please sign in.");
@@ -283,75 +289,89 @@
         if (!localStorage.getItem('user')) {
           showErrorMessage("You are not signed in. Please sign in.");
         }
-        document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
+        document.querySelector("#activeUser").innerHTML = localStorage.getItem('user');
       }
       
       window.onload = init;
     </script>
   </head>
   <body>
-    <div class=centerMeDiv>
-      <h1>Workout Tracker Upload Page</h1>
+    <nav class="columns tile is-ancestor box has-background-info">
+      <a class="column tag tile is-parent box has-background-link" href="/">Home</a>
+      <a class="column tag tile is-parent box has-background-link" href="/app">App</a>
+      <a class="column tag tile is-parent box has-background-link" href="/upload">Upload</a>
+      <a class="column tag tile is-parent box has-background-link" href="/admin">Admin</a>
+      <a class="column tag tile is-parent box has-background-link" href="/sign-in">Sign-In</a>
+      <span class="column tag tile is-parent box has-background-success" id="activeUser"></span>
+    </nav>
 
-      <div id="createWorkoutDiv">
-        <h2>Create New Workout</h2>
-        <div id="messageDiv">
-          <p id="errorField"></p>
-          <div id="messageField"></div>
-        </div>
-        
-        <div id="workoutFieldsDiv">
-          <p>
-            <label for="dateField">Date of Workout: </label>
-            <input id="dateField" type="date">
-          </p>
-          <p>
-            <label for="typeField">Type of Workout: </label>
-            <input id="typeField" type="text" placeholder="Legs">
-          </p>
-          <p>
-            <label for="overallDifficultyField"><a href="/difficulty-scale" target="_blank">Overall Difficulty:</a> </label>
-            <input id="overallDifficultyField" type="number" min="1" max="10" step="1" oninput="validity.valid||(value='');">
-          </p>
-          <h3>Add Exercises</h3>
-        </div>
-        
-        <div id="exercisesDiv">
-          <div id="exerciseDiv1">
-            <label class="exerciseName" for="exerciseNameField1">Exercise Name: </label>
-            <input class="exerciseName" id="exerciseNameField1" type="text"></input>
-            <table class="exerciseTable">
-              <tr>
-                <th>Reps</th>
-                <th>Weight</th>
-                <th>Set Difficulty</th>
-              </tr>
-              <tr>
-                <td><input class="tableInputs" type="number" min="1" max="50" step="1" oninput="validity.valid||(value='');"></input></td>
-                <td><input class="tableInputs" type="number" min="0" max="2000" oninput="validity.valid||(value='');"></input></td>
-                <td><input class="tableInputs" type="number" min="1" max="10" step="1" oninput="validity.valid||(value='');"></input></td>
-              </tr>
-            </table>
-            <input class="exerciseButton" id="addSetRowButton1" type="button" value="Add Row"></input>
-            <input class="exerciseButton" id="removeSetRowButton1" type="button" value="Remove Row"></input>
+    <div class="section columns tile is-ancestor box has-background-primary">
+
+      <div class="column is-three-fifths is-offset-one-fifth centerMeDiv tile is-parent is-vertical box has-background-info">
+
+        <p class="title">Workout Tracker Upload Page</p>
+
+        <div class="container" id="createWorkoutDiv">
+          <p class="subtitle">Create New Workout</p>
+          <div id="messageDiv">
+            <p id="errorField"></p>
+            <div id="messageField"></div>
+          </div>
+          
+          <div class="container tile is-parent is-vertical box has-background-primary" id="workoutFieldsDiv">
+            <p>
+              <label for="dateField">Date of Workout: </label>
+              <input class="input is-small is-link" id="dateField" type="date"/>
+            </p>
+            <p>
+              <label for="typeField">Type of Workout: </label>
+              <input class="input is-small is-link" id="typeField" type="text" placeholder="Legs"/>
+            </p>
+            <p>
+              <label for="overallDifficultyField">Overall Difficulty: </label>
+              <input class="input is-small is-link" id="overallDifficultyField" type="number" min="1" max="10" step="1" oninput="validity.valid||(value='');"/>
+            </p>
+          </div>
+
+          <p class="subtitle">Add Exercises</p>
+
+          <div class="container tile is-parent is-vertical" id="exercisesDiv">
+            <div class="tile is-child is-vertical box has-background-primary" id="exerciseDiv1">
+              <label class="exerciseName" for="exerciseNameField1">Exercise Name: </label>
+              <input class="exerciseName input is-small is-link" id="exerciseNameField1" type="text"/>
+              <table class="exerciseTable table is-bordered is-striped is-narrow tile is-child box">
+                <tr>
+                  <th>Reps</th>
+                  <th>Weight</th>
+                  <th>Set Difficulty</th>
+                </tr>
+                <tr>
+                  <td><input class="tableInputs input is-link" type="number" min="1" max="50" step="1" oninput="validity.valid||(value='');"/></td>
+                  <td><input class="tableInputs input is-link" type="number" min="0" max="2000" oninput="validity.valid||(value='');"/></td>
+                  <td><input class="tableInputs input is-link" type="number" min="1" max="10" step="1" oninput="validity.valid||(value='');"/></td>
+                </tr>
+              </table>
+              <input class="exerciseButton button is-info is-small" id="addSetRowButton1" type="button" value="Add Row"/>
+              <input class="exerciseButton button is-danger is-small" id="removeSetRowButton1" type="button" value="Remove Row"/>
+            </div>
+          </div>
+
+          <div class="container tile is-parent is-vertical box has-background-primary" id="exerciseButtonsDiv">
+            <input class="button is-info is-small" id="addExerciseTableButton" type="button" value="Add Exercise"/>
+            <input class="button is-danger is-small" id="removeExerciseTableButton" type="button" value="Remove Exercise"/>
+          </div>
+
+          <div class="container tile is-parent is-vertical box has-background-warning" id="uploadButtonDiv">
+            <input class="button is-success is-normal is-outlined" id="uploadWorkoutButton" type="button" value="Upload Workout"/>
           </div>
         </div>
+        
 
-        <div id="exerciseButtonsDiv">
-          <input id="addExerciseTableButton" type="button" value="Add Exercise"></input>
-          <input id="removeExerciseTableButton" type="button" value="Remove Exercise"></input>
-        </div>
-
-        <div id="uploadButtonDiv">
-          <input id="uploadWorkoutButton" type="button" value="Upload Workout"></input>
-        </div>
+        <footer>
+          <img src="logo-icon.png" alt="Lift Heavy Things!"/>
+          <p>&#169; 2021 Matt Roberts</p>
+        </footer>
       </div>
-      
-
-      <footer>
-        <img src="logo-icon.png" alt="Lift Heavy Things!">
-        <p>&#169; 2021 Matt Roberts</p>
-      </footer>
     </div>
   </body>
 </html>

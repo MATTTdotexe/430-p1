@@ -1,31 +1,49 @@
-<html>
+<!DOCTYPE html>
+<html class="has-background-primary">
   <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>404 - File Not Found!</title>
-    <link rel="stylesheet" href="default-styles.css">
-    <nav>
-      <a href="/">Home</a> | <a href="/app">App</a> | <a href="/upload">Upload</a> | <a href="/admin">Admin</a> | <a href="/sign-in">Sign-In</a> | <span class="activeUser"></span>
-    </nav>
+    <link rel="stylesheet" href="default-styles.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"/>
     <script>
       const init = () => {
-        document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
+        document.querySelector("#activeUser").innerHTML = localStorage.getItem('user');
       }
 
       window.onload = init;
     </script>
   </head>
   <body>
-    <h1>404 - File Not Found!</h1>
-    <p>Check your URL or your typing!</p>
-    <p>Perhaps you are looking for 
-     <a href="/app">App Page</a>
-     or 
-     <a href="/upload">Upload Page</a>
-     ?
-    </p>
+    <nav class="columns tile is-ancestor box has-background-info">
+      <a class="column tag tile is-parent box has-background-link" href="/">Home</a>
+      <a class="column tag tile is-parent box has-background-link" href="/app">App</a>
+      <a class="column tag tile is-parent box has-background-link" href="/upload">Upload</a>
+      <a class="column tag tile is-parent box has-background-link" href="/admin">Admin</a>
+      <a class="column tag tile is-parent box has-background-link" href="/sign-in">Sign-In</a>
+      <span class="column tag tile is-parent box has-background-success" id="activeUser"></span>
+    </nav>
 
-    <footer>
-      <img src="logo-icon.png" alt="Lift Heavy Things!">
-      <p>&#169; 2021 Matt Roberts</p>
-    </footer>
+    <div class="section columns tile is-ancestor box has-background-primary">
+
+      <div class="column is-three-fifths is-offset-one-fifth centerMeDiv tile is-parent is-vertical box has-background-info">
+
+        <p class="title">404 - File Not Found!</p>
+        <p class="subtitle">Check your URL or your typing!</p>
+        <p>Maybe you were looking for the 
+         <a class="tag is-link" href="/app">App Page</a>
+         or the
+         <a class="tag is-link" href="/upload">Upload Page</a>
+         ?
+        </p>
+
+        <footer>
+          <img src="logo-icon.png" alt="Lift Heavy Things!"/>
+          <p>&#169; 2021 Matt Roberts</p>
+        </footer>
+
+      </div>
+
+    </div>
   </body>
 </html>

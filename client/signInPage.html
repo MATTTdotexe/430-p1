@@ -1,17 +1,19 @@
+<!DOCTYPE html>
 <html>
-  <head>
+  <head class="has-background-primary">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Workout Tracker Sign-In Page</title>
-    <link rel="stylesheet" href="default-styles.css">
-    <nav>
-      <a href="/">Home</a> | <a href="/app">App</a> | <a href="/upload">Upload</a> | <a href="/admin">Admin</a> | <span id="current">Sign-In</span> | <span class="activeUser"></span>
-    </nav>
+    <link rel="stylesheet" href="default-styles.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"/>
     <script>
+      // displays a message in a dedicated div
       const showMessage = (message, color = '') => {
         // remove a previous message if needed
         let messageDiv = document.querySelector("#messageDiv");
         messageDiv.innerHTML = "";
 
-        if (color === "") { // if no color is set, treat the message as html already
+        if (color === "") { // if no color was passed in, treat the message as html already
           messageDiv.innerHTML = message;
         } else {
           // create and append the new message
@@ -23,57 +25,21 @@
         }
       }
 
-      const signInUser = () => {
-        let user = document.querySelector("#signInInput").value;
-        if (user === "") { // check if a user was entered
-          showMessage("Enter a user to sign in.", "red");
-        } else {
-          doesUserExist();
-        }
-      }
-
-      const doesUserExist = (e) => {
-        let user = document.querySelector("#signInInput").value;
-        // create the URL with all params
-        const userExistsURL = "/user-exists?user=" + user;
-
-        const xhr = new XMLHttpRequest();
-        xhr.onload = handleUserExistsResponse;
-        xhr.open("POST", userExistsURL);
-        xhr.setRequestHeader('Accept', "application/JSON");
-        xhr.send();
-      }
-
-      const handleUserExistsResponse = (e) => {
-        // get the response from the server (should be a boolean)
-        let obj = e.target.response;
-        obj = JSON.parse(obj);
-
-        if (obj.userExists) { // server says that user exists
-          let user = document.querySelector("#signInInput").value; 
-          localStorage.setItem("user", user); // save the user in local storage to use on other pages
-          // change user in the nav bar
-          document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
-
-          showMessage(`User ${user} successfully signed in.`, "green");
-        } else { // server says that user does not exist
-          let user = document.querySelector("#signInInput").value; 
-          showMessage(`User ${user} does not exist.`, "red");
-        }
-      }
-
-      const createNewUser = () => {
+      // immediately called on new user form submission
+      const createNewUserClicked = () => {
         let user = document.querySelector("#createNewUserInput").value;
-        if (user === "") { // check if a user was entered
+        // check if a user was entered
+        if (user === "") { 
           showMessage("Enter a new user to register.", "red");
         } else {
-          uploadNewUser();
+          uploadNewUserRequest();
         }
       }
 
-      const uploadNewUser = (e) => {
+      // asks the server to create a new user through a POST request
+      const uploadNewUserRequest = (e) => {
         let user = document.querySelector("#createNewUserInput").value;
-        // create the URL with all params
+        // create the URL
         const userUploadURL = "/user-upload?user=" + user;
 
         const xhr = new XMLHttpRequest();
@@ -83,45 +49,102 @@
         xhr.send();
       }
 
+      // handles response from the server 
       const handleUserUploadResponse = (e) => {
-        // get the response from the server
+        // get the response from the server (html)
         let obj = e.target.response;
-
         showMessage(obj);
       }
 
-      const init = () => {
-        document.querySelector("#createNewUserButton").onclick = createNewUser;
-        document.querySelector("#signInButton").onclick = signInUser;
+      // immediately called on sign in user form submission
+      const signInUserClicked = () => {
+        let user = document.querySelector("#signInInput").value;
+        // check if a user was entered
+        if (user === "") { 
+          showMessage("Enter a user to sign in.", "red");
+        } else {
+          doesUserExistRequest();
+        }
+      }
 
-        document.querySelector(".activeUser").innerHTML = localStorage.getItem('user');
+      // asks the server if a user exists through a GET request
+      const doesUserExistRequest = (e) => {
+        let user = document.querySelector("#signInInput").value;
+        // create the URL
+        const userExistsURL = "/user-exists?user=" + user;
+
+        const xhr = new XMLHttpRequest();
+        xhr.onload = handleUserExistsResponse;
+        xhr.open("GET", userExistsURL);
+        xhr.setRequestHeader('Accept', "text/html");
+        xhr.send();
+      }
+
+      // handles response from the server if the user exists by posting a message on screen
+      const handleUserExistsResponse = (e) => {
+        // get the response from the server (html)
+        let obj = e.target.response;
+        // will be a green p element for positive response / red for negative
+        if (obj.includes("green")) {
+          let user = document.querySelector("#signInInput").value;
+          // logs the user in
+          localStorage.setItem("user", user);
+          document.querySelector("#activeUser").innerHTML = localStorage.getItem('user');
+          showMessage(`User ${user} successfully signed in.`, "green");
+        } else {
+          showMessage(obj);
+        }
+      }
+
+      const init = () => {
+        // sets the current user in the nav bar
+        document.querySelector("#activeUser").innerHTML = localStorage.getItem('user');
       }
 
       window.onload = init;
     </script>
   </head>
   <body>
-    <div class="centerMeDiv">
-      <h1>Workout Tracker Sign-In Page</h1>
+    <nav class="columns tile is-ancestor box has-background-info">
+      <a class="column tag tile is-parent box has-background-link" href="/">Home</a>
+      <a class="column tag tile is-parent box has-background-link" href="/app">App</a>
+      <a class="column tag tile is-parent box has-background-link" href="/upload">Upload</a>
+      <a class="column tag tile is-parent box has-background-link" href="/admin">Admin</a>
+      <a class="column tag tile is-parent box has-background-link" href="/sign-in">Sign-In</a>
+      <span class="column tag tile is-parent box has-background-success" id="activeUser"></span>
+    </nav>
 
-      <div id="messageDiv">
-      </div>
+    <div class="section columns tile is-ancestor box has-background-primary">
 
-      <div id="createNewUserDiv">
-        <label for="createNewUserInput">Enter New User: </label>
-        <input id="createNewUserInput" type="text" placeholder="newuser123"></input>
-        <input id="createNewUserButton" type="button" value="Create User"></input>
-      </div>
-       
-      <div id="signInDiv">
-        <label for="signInInput">Sign In As: </label>
-        <input id="signInInput" type="text" placeholder="matthewroberts117"></input>
-        <input id="signInButton" type="button" value="Sign In"></input>
-      </div>
+      <div class="column is-three-fifths is-offset-one-fifth centerMeDiv tile is-parent is-vertical box has-background-info">
 
-    <footer>
-      <img src="logo-icon.png" alt="Lift Heavy Things!">
-      <p>&#169; 2021 Matt Roberts</p>
-    </footer>
+        <p class="title">Sign-In Page</p>
+
+        <div class="container" id="messageDiv"></div>
+
+        <!-- HIJACKED FORM USE -->
+        <div class="container tile is-child is-vertical box has-background-primary" id="createNewUserDiv">
+          <p class="subtitle">Create New User</p>
+          <!-- return false prevents the page from reloading on submission -->
+          <form class="form centerMeDiv" id="createNewUserForm" onsubmit="createNewUserClicked(); return false;">
+            <input id="createNewUserInput" type="text" placeholder="newuser123" size="15"/>
+            <button class="button is-link is-small is-outlined" id="createNewUserButton" type="submit" >Create User</button>
+          </form>
+        </div>
+         
+        <div class="container tile is-child is-vertical box has-background-primary" id="signInDiv" onsubmit="signInUserClicked(); return false;">
+          <p class="subtitle">Log In</p>
+          <form class="form centerMeDiv" id="signInForm">
+            <input class="" id="signInInput" type="text" placeholder="matthewroberts117" size="15"/>
+            <button class="button is-link is-small is-outlined" id="signInButton" type="submit">Log In</button>
+          </form>
+        </div>
+
+        <footer>
+          <img src="logo-icon.png" alt="Lift Heavy Things!"/>
+          <p>&#169; 2021 Matt Roberts</p>
+        </footer>
+      </div>
+    </div>
   </body>
 </html>
