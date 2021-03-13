@@ -84,10 +84,22 @@ const processWorkoutData = (JSONData) => {
   return JSONData;
 };
 
+// Source: https://stackoverflow.com/questions/3710204/how-to-check-if-a-string-is-a-valid-json-string-in-javascript-without-using-try
+// Credit goes to user https://stackoverflow.com/users/53114/gumbo
+const isValidJSONString = (string) => {
+	try {
+		JSON.parse(string);
+	} catch (e) {
+		return false;
+	}
+	return true;
+};
+
 module.exports = {
   respond,
   respondHeaderOnly,
   getBinarySize,
   doesUserExist,
   processWorkoutData,
+  isValidJSONString
 };
