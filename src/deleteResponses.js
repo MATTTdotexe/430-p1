@@ -48,7 +48,7 @@ const deleteWorkoutResponse = (request, response, params, acceptedTypes, httpMet
   // get the user's workout data
   const { workouts } = userData;
   // check if the requested index to delete is valid
-  if (workoutIndex > workouts.length - 1 || workoutIndex < 0 || isNaN(workoutIndex)) {
+  if (workoutIndex > workouts.length - 1 || workoutIndex < 0 || Number.isNaN(workoutIndex)) {
     // workout index to delete is not valid, return an error
     let content = '<p style="color:red;" font-weight="bold">Workout index invalid.</p>';
     content = JSON.stringify(content);
@@ -129,7 +129,7 @@ const deleteExerciseResponse = (request, response, params, acceptedTypes, httpMe
   // get the user's workout data
   const { workouts } = userData;
   // check if the requested index to delete is valid
-  if (workoutIndex > workouts.length - 1 || workoutIndex < 0 || isNaN(workoutIndex)) {
+  if (workoutIndex > workouts.length - 1 || workoutIndex < 0 || Number.isNaN(workoutIndex)) {
     // workout index to delete is not valid, return an error
     let content = '<p style="color:red;" font-weight="bold">Exercise delete failed! Workout index invalid.</p>';
     content = JSON.stringify(content);
@@ -140,7 +140,7 @@ const deleteExerciseResponse = (request, response, params, acceptedTypes, httpMe
   // get the user's exercise data for the selected workout
   const { exercises } = workouts[workoutIndex];
   // check if the requested index to delete is valid
-  if (exerciseIndex > exercises.length - 1 || exerciseIndex < 0 || isNaN(exerciseIndex)) {
+  if (exerciseIndex > exercises.length - 1 || exerciseIndex < 0 || Number.isNaN(exerciseIndex)) {
     // exercise index to delete is not valid, return an error
     let content = '<p style="color:red;" font-weight="bold">Exercise delete failed! Exercise index invalid.</p>';
     content = JSON.stringify(content);
