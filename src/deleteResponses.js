@@ -3,8 +3,8 @@ const helperHandler = require('./helper.js');
 
 // deletes a workout from the data
 const deleteWorkoutResponse = (request, response, params, acceptedTypes, httpMethod) => {
-  // check if the http method is valid (head and get will be treated as delete)
-  if (httpMethod !== 'GET' && httpMethod !== 'HEAD' && httpMethod !== 'DELETE') {
+  // check if the http method is valid
+  if (httpMethod !== 'DELETE') {
     const errorContent = '<p style="color:red;" font-weight="bold">Method not allowed.</p>';
     return helperHandler.respond(request, response, 405, errorContent, 'text/html', helperHandler.getBinarySize(errorContent));
   }
@@ -42,18 +42,18 @@ const deleteWorkoutResponse = (request, response, params, acceptedTypes, httpMet
     let content = `<p style="color:red;" font-weight="bold">User ${user} does not exist.</p>`;
     content = JSON.stringify(content);
     const length = helperHandler.getBinarySize(content);
-    return helperHandler.respond(request, response, 400, content, 'text/html', length);
+    return helperHandler.respond(request, response, 200, content, 'text/html', length);
   }
 
   // get the user's workout data
   const { workouts } = userData;
   // check if the requested index to delete is valid
-  if (workoutIndex > workouts.length - 1 || workoutIndex < 0) {
+  if (workoutIndex > workouts.length - 1 || workoutIndex < 0 || isNaN(workoutIndex)) {
     // workout index to delete is not valid, return an error
     let content = '<p style="color:red;" font-weight="bold">Workout index invalid.</p>';
     content = JSON.stringify(content);
     const length = helperHandler.getBinarySize(content);
-    return helperHandler.respond(request, response, 400, content, 'test/html', length);
+    return helperHandler.respond(request, response, 200, content, 'test/html', length);
   }
 
   // remove the item from the array of workouts
@@ -77,7 +77,7 @@ const deleteWorkoutResponse = (request, response, params, acceptedTypes, httpMet
 // deletes an exercise from the data
 const deleteExerciseResponse = (request, response, params, acceptedTypes, httpMethod) => {
   // check if the http method is valid (head and get will be treated as delete)
-  if (httpMethod !== 'GET' && httpMethod !== 'HEAD' && httpMethod !== 'DELETE') {
+  if (httpMethod !== 'DELETE') {
     const errorContent = '<p style="color:red;" font-weight="bold">Method not allowed.</p>';
     return helperHandler.respond(request, response, 405, errorContent, 'text/html', helperHandler.getBinarySize(errorContent));
   }
@@ -123,29 +123,29 @@ const deleteExerciseResponse = (request, response, params, acceptedTypes, httpMe
     let content = `<p style="color:red;" font-weight="bold">Exercise delete failed! User ${user} does not exist.</p>`;
     content = JSON.stringify(content);
     const length = helperHandler.getBinarySize(content);
-    return helperHandler.respond(request, response, 400, content, 'text/html', length);
+    return helperHandler.respond(request, response, 200, content, 'text/html', length);
   }
 
   // get the user's workout data
   const { workouts } = userData;
   // check if the requested index to delete is valid
-  if (workoutIndex > workouts.length - 1 || workoutIndex < 0) {
+  if (workoutIndex > workouts.length - 1 || workoutIndex < 0 || isNaN(workoutIndex)) {
     // workout index to delete is not valid, return an error
     let content = '<p style="color:red;" font-weight="bold">Exercise delete failed! Workout index invalid.</p>';
     content = JSON.stringify(content);
     const length = helperHandler.getBinarySize(content);
-    return helperHandler.respond(request, response, 400, content, 'test/html', length);
+    return helperHandler.respond(request, response, 200, content, 'test/html', length);
   }
 
   // get the user's exercise data for the selected workout
   const { exercises } = workouts[workoutIndex];
   // check if the requested index to delete is valid
-  if (exerciseIndex > exercises.length - 1 || exerciseIndex < 0) {
+  if (exerciseIndex > exercises.length - 1 || exerciseIndex < 0 || isNaN(exerciseIndex)) {
     // exercise index to delete is not valid, return an error
     let content = '<p style="color:red;" font-weight="bold">Exercise delete failed! Exercise index invalid.</p>';
     content = JSON.stringify(content);
     const length = helperHandler.getBinarySize(content);
-    return helperHandler.respond(request, response, 400, content, 'test/html', length);
+    return helperHandler.respond(request, response, 200, content, 'test/html', length);
   }
 
   // remove the item from the array of exercises
