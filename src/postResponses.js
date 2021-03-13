@@ -5,8 +5,8 @@ const helperHandler = require('./helper.js');
 const postNewWorkoutResponse = (request, response, params, acceptedTypes, httpMethod) => {
   const { user } = params;
 
-  // check if the http method is valid (head and get will be treated as post)
-  if (httpMethod !== 'GET' && httpMethod !== 'HEAD' && httpMethod !== 'POST') {
+  // check if the http method is valid
+  if (httpMethod !== 'POST') {
     const errorContent = '<p style="color:red;" font-weight="bold">Method not allowed.</p>';
     return helperHandler.respond(request, response, 405, errorContent, 'text/html', helperHandler.getBinarySize(errorContent));
   }
@@ -16,10 +16,18 @@ const postNewWorkoutResponse = (request, response, params, acceptedTypes, httpMe
   if (userIndex === -1) {
     const content = '<p style="color:red;" font-weight="bold">Workout Upload Failed! User does not exist.</p>';
     const length = helperHandler.getBinarySize(content);
-    return helperHandler.respond(request, response, 400, content, 'text/html', length);
+    return helperHandler.respond(request, response, 200, content, 'text/html', length);
   }
 
   // validate the data param
+  // check if it is valid JSON
+  let validData = helperHandler.isValidJSONString(params.data);
+  if (!validData) {
+    const content = '<p style="color:red;" font-weight="bold">Workout Upload Failed! Data formatted incorrectly. Not valid JSON.</p>';
+    const length = helperHandler.getBinarySize(content);
+    return helperHandler.respond(request, response, 400, content, 'text/html', length);
+  }
+
   const workout = helperHandler.processWorkoutData(JSON.parse(params.data));
   if (!workout) {
     const content = '<p style="color:red;" font-weight="bold">Workout Upload Failed! Data formatted incorrectly.</p>';
@@ -48,8 +56,8 @@ const postNewWorkoutResponse = (request, response, params, acceptedTypes, httpMe
 const postNewUserResponse = (request, response, params, acceptedTypes, httpMethod) => {
   const { user } = params;
 
-  // check if the http method is valid (head and get will be treated as post)
-  if (httpMethod !== 'GET' && httpMethod !== 'HEAD' && httpMethod !== 'POST') {
+  // check if the http method is valid
+  if (httpMethod !== 'POST') {
     const errorContent = '<p style="color:red;" font-weight="bold">Method not allowed.</p>';
     return helperHandler.respond(request, response, 405, errorContent, 'text/html', helperHandler.getBinarySize(errorContent));
   }
@@ -71,7 +79,7 @@ const postNewUserResponse = (request, response, params, acceptedTypes, httpMetho
   if (userIndex !== -1) {
     const content = '<p style="color:red;" font-weight="bold">New user creation failed! User already exists.</p>';
     const length = helperHandler.getBinarySize(content);
-    return helperHandler.respond(request, response, 400, content, 'text/html', length);
+    return helperHandler.respond(request, response, 200, content, 'text/html', length);
   }
 
   const newData = data;
