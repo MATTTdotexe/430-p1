@@ -33,9 +33,9 @@ const getUserExistsResponse = (request, response, params, acceptedTypes, httpMet
   const userIndex = helperHandler.doesUserExist(user);
   if (userIndex === -1) {
     if (acceptedTypes.includes('text/xml')) {
-      const content = `<error>User ${user} does not exist.</error>`;
+      const content = `<message>User ${user} does not exist.</message>`;
       const length = helperHandler.getBinarySize(content);
-      return helperHandler.respond(request, response, 400, content, 'text/xml', length);
+      return helperHandler.respond(request, response, 200, content, 'text/xml', length);
     }
     // return a response that the user does not exist
     const content = `<p style="color:red;" font-weight="bold">User ${user} does not exist.</p>`;
@@ -49,7 +49,7 @@ const getUserExistsResponse = (request, response, params, acceptedTypes, httpMet
     // return a response of that the user exists
       const content = `<message>User ${user} does exist.</message>`;
       const length = helperHandler.getBinarySize(content);
-      return helperHandler.respondHeaderOnly(request, response, 200, 'text/html', length);
+      return helperHandler.respondHeaderOnly(request, response, 200, 'text/xml', length);
     }
     // return a response of that the user exists
     const content = `<p style="color:green;" font-weight="bold">User ${user} does exist.</p>`;
@@ -57,12 +57,12 @@ const getUserExistsResponse = (request, response, params, acceptedTypes, httpMet
     return helperHandler.respondHeaderOnly(request, response, 200, 'text/html', length);
   }
 
-  // responses for a normal HEAD http type
+  // responses for a normal GET http type
   if (acceptedTypes.includes('text/xml')) {
     // return a response of that the user exists
     const content = `<message>User ${user} does exist.</message>`;
     const length = helperHandler.getBinarySize(content);
-    return helperHandler.respond(request, response, 200, content, 'text/html', length);
+    return helperHandler.respond(request, response, 200, content, 'text/xml', length);
   }
   // return a response of that the user exists
   const content = `<p style="color:green;" font-weight="bold">User ${user} does exist.</p>`;
@@ -85,12 +85,12 @@ const getAllUsers = (type) => {
       return allUsers;
     };
     return JSON.stringify(responseObjJSON());
-  } if (type === 'xml') {
+  } 
+  if (type === 'xml') {
     const responseObjXML = () => {
       let allUsers = '<allUsers>';
       // loop through all objects and search for the user param
       for (let i = 0; i < data.length; i++) {
-        allUsers.push(data[i].user);
         allUsers += `<user>${data[i].user}</user>`;
       }
       allUsers += '</allUsers>';
@@ -106,7 +106,7 @@ const getAllUsersResponse = (request, response, params, acceptedTypes, httpMetho
   // check http method
   if (httpMethod !== 'GET' && httpMethod !== 'HEAD') {
     if (acceptedTypes.includes('text/xml')) {
-      const errorContent = '<erro>Method not allowed.</error>';
+      const errorContent = '<error>Method not allowed.</error>';
       return helperHandler.respond(request, response, 405, errorContent, 'text/xml', helperHandler.getBinarySize(errorContent));
     }
     const errorContent = '<p style="color:red;" font-weight="bold">Method not allowed.</p>';
